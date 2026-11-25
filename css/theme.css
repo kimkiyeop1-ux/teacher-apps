@@ -1,0 +1,39 @@
+/* =========================================================
+   theme.css — 사이트 분위기를 정하는 값만 모아 둔 파일
+   색·글꼴·둥글기·간격을 바꾸고 싶으면 이 파일만 고치세요.
+   ========================================================= */
+:root {
+  /* 색 */
+  --color-bg: #E8EEE4;          /* 페이지 바탕 (연한 세이지) */
+  --color-surface: #F7F9F4;     /* 카드·검색창 바탕 */
+  --color-field: #3F6B52;       /* 머리말 운동장 초록 */
+  --color-ink: #1E3328;         /* 기본 글자 (짙은 솔잎색) */
+  --color-muted: #5B6D61;       /* 보조 글자 */
+  --color-on-field: #F4F7F1;    /* 초록 바탕 위 글자 */
+  --color-on-field-muted: #DDE8DF;
+  --color-accent: #D9A43A;      /* 강조 (경기장 라인 노랑) */
+  --color-border: #D5DED3;      /* 입력창 테두리 */
+  --color-chalk: #FFFFFF;       /* 코트 라인·썸네일 테두리 */
+
+  /* 글꼴 */
+  --font-display: 'Gowun Dodum', 'Pretendard', sans-serif;  /* 제목 */
+  --font-body: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; /* 본문 */
+
+  /* 글자 크기 */
+  --size-site-name: clamp(40px, 7vw, 68px);
+  --size-card-title: 21px;
+  --size-body: 16px;
+
+  /* 둥글기 */
+  --radius-panel: 20px;
+  --radius-card: 18px;
+  --radius-thumb: 12px;
+  --radius-input: 14px;
+
+  /* 머리말 코트 라인 진하기 (0 = 안 보임, 1 = 진함) */
+  --court-opacity: 0.22;
+
+  /* 레이아웃 */
+  --page-width: 1080px;
+  --card-min-width: 240px;      /* 카드가 이보다 좁아지면 한 줄 칸 수가 줄어요 */
+}
