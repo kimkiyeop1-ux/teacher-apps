@@ -34,7 +34,7 @@ function renderCards() {
     <li>
       <a class="card-link" href="guide.html?id=${encodeURIComponent(a.id)}">
         <div class="thumb"><img src="${esc(a.thumb)}" alt="" loading="lazy"></div>
-        <div class="card-meta"><span class="card-cat">${esc(a.category)}</span><span>${esc(a.type)}</span>${a.date ? `<span>${esc(a.date)}</span>` : ''}${a.url ? '' : '<span class="card-private">가이드만 공개</span>'}</div>
+        <div class="card-meta"><span class="card-cat">${esc(a.category)}</span><span>${esc(a.type)}</span>${a.date ? `<span>${esc(a.date)}</span>` : ''}${a.badge ? `<span class="card-badge">${esc(a.badge)}</span>` : ''}${a.url ? '' : '<span class="card-private">가이드만 공개</span>'}</div>
         <h3 class="card-title">${esc(a.title)}</h3>
         <p class="card-summary">${esc(a.summary)}</p>
         <span class="card-more">사용 가이드 보기</span>

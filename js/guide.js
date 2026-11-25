@@ -12,7 +12,7 @@ function render(app, site) {
   const g = app.guide || {};
   document.title = `${app.title} 사용 가이드 · ${site.name}`;
   $('.back').textContent = `← ${site.name}`;
-  $('#gMeta').innerHTML = `<span class="g-cat">${esc(app.category)}</span><span>${esc(app.type)}</span>${app.date ? `<span>${esc(app.date)}</span>` : ''}`;
+  $('#gMeta').innerHTML = `<span class="g-cat">${esc(app.category)}</span><span>${esc(app.type)}</span>${app.date ? `<span>${esc(app.date)}</span>` : ''}${app.badge ? `<span class="g-badge">${esc(app.badge)}</span>` : ''}`;
   $('#gTitle').textContent = app.title;
   $('#gSummary').textContent = app.summary;
 

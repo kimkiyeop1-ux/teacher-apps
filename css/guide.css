@@ -22,6 +22,7 @@
 .btn--ghost { border: 2px solid rgba(255, 255, 255, 0.55); color: var(--color-on-field); }
 .btn--ghost:hover { border-color: var(--color-on-field); }
 .btn.is-disabled { opacity: 0.6; cursor: default; }
+.g-badge { padding: 0 10px; border-radius: 999px; background: #F5E3BC; color: #6B4A0E; font-weight: 700; }
 .g-private {
   margin: 0; padding: 10px 16px; border-radius: 12px;
   background: rgba(255, 255, 255, 0.12); color: var(--color-on-field);
