@@ -35,8 +35,8 @@ a { color: inherit; }
 }
 .hero-in { position: relative; max-width: var(--page-width); margin: 0 auto; }
 .site-name {
-  font-family: var(--font-display);
-  font-weight: 400;
+  font-family: var(--font-title);
+  font-weight: 700;
   font-size: var(--size-site-name);
   line-height: 1.15;
   letter-spacing: -0.01em;

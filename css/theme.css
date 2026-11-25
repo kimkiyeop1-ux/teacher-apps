@@ -16,11 +16,13 @@
   --color-chalk: #FFFFFF;       /* 코트 라인·썸네일 테두리 */
 
   /* 글꼴 */
-  --font-display: 'Gowun Dodum', 'Pretendard', sans-serif;  /* 제목 */
-  --font-body: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; /* 본문 */
+  --font-title: 'Gaegu', 'Jua', sans-serif;       /* 큰 제목 (사이트 이름·가이드 제목): 손글씨 */
+  --font-display: 'Jua', 'Gowun Dodum', sans-serif; /* 카드 제목·섹션 제목: 둥근 글꼴 */
+  --font-body: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; /* 본문 */
+  /* 글꼴을 바꾸면 index.html·guide.html 위쪽의 Google Fonts 줄도 함께 바꾸세요 */
 
   /* 글자 크기 */
-  --size-site-name: clamp(40px, 7vw, 68px);
+  --size-site-name: clamp(48px, 8vw, 80px);
   --size-card-title: 21px;
   --size-body: 16px;
 

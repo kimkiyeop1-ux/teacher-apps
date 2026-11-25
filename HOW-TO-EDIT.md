@@ -133,7 +133,8 @@
 --color-accent: #F2B84B;
 ```
 
-글꼴을 바꾸려면 `index.html`·`guide.html` 위쪽의 Google Fonts 줄과 `theme.css`의 `--font-display`를 함께 바꿔야 해서, 아래 7번처럼 Claude에게 부탁하는 것을 추천해요.
+지금 글꼴은 큰 제목 `--font-title`(개구), 카드·섹션 제목 `--font-display`(주아), 본문 `--font-body`(고운돋움)이에요.
+글꼴을 바꾸려면 `index.html`·`guide.html` 위쪽의 Google Fonts 줄과 `theme.css`의 글꼴 값을 함께 바꿔야 해서, 아래 7번처럼 Claude에게 부탁하는 것을 추천해요.
 
 ---
 
