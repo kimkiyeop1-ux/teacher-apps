@@ -87,7 +87,7 @@
       "category": "평가·기록",
       "type": "웹앱",
       "date": "",
-      "url": "https://kimkiyeop1-ux.github.io/flagfootball/",
+      "url": "",
       "thumb": "shots/flagfootball.jpg",
       "tags": [
         "체육",
@@ -145,7 +145,8 @@
           }
         ],
         "extraLinks": []
-      }
+      },
+      "access": "guide-only"
     },
     {
       "id": "lunch-duty",
@@ -154,7 +155,7 @@
       "category": "학교 업무",
       "type": "웹앱 + 구글 시트",
       "date": "",
-      "url": "https://lunch-duty-alimi.web.app",
+      "url": "",
       "thumb": "shots/lunch-duty.jpg",
       "tags": [
         "급식",
@@ -208,11 +209,12 @@
           },
           {
             "q": "우리 학교에서도 쓸 수 있나요?",
-            "a": "지금 링크는 저희 학교용이에요. 다른 학교에서 쓰려면 관리용 구글 시트와 알림 설정을 학교마다 따로 만들어야 해서, 설정 방법을 준비하고 있어요."
+            "a": "학교 데이터를 다루는 앱이라 지금은 저희 학교 안에서만 쓰고 있어요. 다른 학교에서 쓰려면 관리용 구글 시트와 알림 설정을 학교마다 따로 만들어야 해서, 설정 방법을 준비하고 있어요."
           }
         ],
         "extraLinks": []
-      }
+      },
+      "access": "guide-only"
     },
     {
       "id": "ai-coach",

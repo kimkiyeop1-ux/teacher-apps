@@ -19,7 +19,11 @@ function render(app, site) {
   const extra = (g.extraLinks || []).map((l) => l.url
     ? `<a class="btn btn--ghost" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`
     : `<span class="btn btn--ghost is-disabled" aria-disabled="true">${esc(l.label)} (준비 중)</span>`).join('');
-  $('#gActions').innerHTML = `<a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">바로 열기</a>${extra}`;
+  // url이 비어 있으면(학교 데이터를 다루는 앱 등) 열기 버튼 없이 가이드만 보여 줍니다.
+  const openable = Boolean(app.url);
+  $('#gActions').innerHTML = openable
+    ? `<a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">바로 열기</a>${extra}`
+    : `<p class="g-private">학교 데이터를 다루는 앱이라 사용 가이드만 공개해요.</p>${extra}`;
 
   $('#gShot').innerHTML = app.thumb ? `<img src="${esc(app.thumb)}" alt="${esc(app.title)} 화면">` : '';
   const shot = $('#gShot img');
@@ -41,7 +45,7 @@ function render(app, site) {
     section('주요 기능', list(g.features)) +
     section('사용 방법', steps) +
     section('자주 묻는 질문', faq) +
-    `<p class="g-bottom"><a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">${esc(app.title)} 열기</a></p>`;
+    (openable ? `<p class="g-bottom"><a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">${esc(app.title)} 열기</a></p>` : '');
 }
 
 function notFound() {
