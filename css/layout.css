@@ -45,6 +45,14 @@ a { color: inherit; }
 .site-name a { text-decoration: none; }
 .intro { font-size: 18px; margin: 0 0 14px; max-width: 34em; color: var(--color-on-field-muted); white-space: pre-line; }
 .byline { margin: 0; font-weight: 600; color: var(--color-accent); }
+.intro-link {
+  display: inline-block; margin-top: 18px;
+  padding: 10px 18px; border-radius: 999px;
+  border: 2px solid var(--color-accent);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-on-field); font-weight: 700; text-decoration: none;
+}
+.intro-link:hover { background: var(--color-accent); color: var(--color-ink); }
 
 /* ---------- 찾기 (검색 + 카테고리 탭) ---------- */
 .finder {

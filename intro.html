@@ -85,13 +85,14 @@ h2{font-size:clamp(30px,4.4vw,74px)}
 .s.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.s,.scene{transition:none}.s{transform:none}}
 /* apps */
-.apps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.6vw,28px)}
-.app{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;padding:clamp(10px,1vw,16px);cursor:pointer}
-.app img{width:100%;aspect-ratio:21/13;object-fit:cover;object-position:top;display:block;margin-bottom:8px}
-.app .tag{font-size:.72em;font-weight:700;color:var(--accent2)}
-.app b{font-size:clamp(17px,1.5vw,26px);line-height:1.3}
-.app .desc{font-size:.8em;color:var(--soft);line-height:1.4}
-.app .go{margin-top:auto;padding-top:8px;font-size:.78em;font-weight:700;color:var(--accent)}
+.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.4vw,22px)}
+.app{display:grid;grid-template-columns:42% 1fr;align-items:center;gap:clamp(8px,1vw,16px);text-decoration:none;color:inherit;padding:clamp(8px,.9vw,14px);cursor:pointer}
+.app img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top;display:block}
+.app .txt{display:flex;flex-direction:column;gap:2px}
+.app .tag{font-size:.7em;font-weight:700;color:var(--accent2)}
+.app b{font-size:clamp(16px,1.35vw,24px);line-height:1.3}
+.app .desc{font-size:.76em;color:var(--soft);line-height:1.4}
+.app .go{padding-top:6px;font-size:.74em;font-weight:700;color:var(--accent)}
 /* glossary */
 .gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,30px)}
 .g{display:grid;grid-template-columns:auto auto auto 1fr;align-items:center;gap:clamp(8px,1vw,18px);padding:clamp(14px,1.8vw,28px)}
@@ -172,7 +173,7 @@ button{font:inherit;cursor:pointer}
   .b{max-width:92%}.jargon{max-width:100%}
   .hint{display:none}
 }
-@media (max-width:520px){.apps{grid-template-columns:1fr 1fr}.app .desc{display:none}.g{grid-template-columns:auto 1fr}.g .eq{display:none}.g .meta{grid-column:1/-1}}
+@media (max-width:520px){.apps{grid-template-columns:1fr}.g{grid-template-columns:auto 1fr}.g .eq{display:none}.g .meta{grid-column:1/-1}}
 
 </style>
 </head>
@@ -192,26 +193,36 @@ button{font:inherit;cursor:pointer}
 <section class="scene" data-auto="2">
   <p class="kicker s">실제로 쓰고 있어요</p>
   <h2 class="s">제가 만든 것들이에요</h2>
-  <div class="apps">
-    <a class="app s" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=gym-metaverse" target="_blank" rel="noopener">
+  <div class="apps s">
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=gym-metaverse" target="_blank" rel="noopener">
       <img src="shots/gym-metaverse.jpg" alt="가상 체육관 화면">
-      <span class="tag">체육 수업</span><b>갱갱중학교 가상 체육관</b>
-      <span class="desc">아바타로 돌아다니는 3D 체육관</span><span class="go">눌러서 열어보기 ↗</span>
+      <span class="txt"><span class="tag">체육 수업</span><b>갱갱중학교 가상 체육관</b>
+      <span class="desc">아바타로 돌아다니는 3D 체육관</span><span class="go">눌러서 열어보기 ↗</span></span>
     </a>
-    <a class="app s" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=flagfootball" target="_blank" rel="noopener">
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=flagfootball" target="_blank" rel="noopener">
       <img src="shots/flagfootball.jpg" alt="플래그풋볼 수행평가 화면">
-      <span class="tag">평가·기록</span><b>플래그풋볼 수행평가</b>
-      <span class="desc">점수 기록하고 모둠 짜기</span><span class="go">눌러서 열어보기 ↗</span>
+      <span class="txt"><span class="tag">평가·기록</span><b>플래그풋볼 수행평가</b>
+      <span class="desc">점수 기록하고 모둠 짜기</span><span class="go">눌러서 열어보기 ↗</span></span>
     </a>
-    <a class="app s" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=lunch-duty" target="_blank" rel="noopener">
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=sports-day" target="_blank" rel="noopener">
+      <img src="shots/sports-day.jpg" alt="체육대회 원앱 화면">
+      <span class="txt"><span class="tag">학교 업무</span><b>체육대회 원앱</b>
+      <span class="desc">대진표·점수·전광판을 한 앱으로</span><span class="go">눌러서 열어보기 ↗</span></span>
+    </a>
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=lunch-duty" target="_blank" rel="noopener">
       <img src="shots/lunch-duty.jpg" alt="급식지도 알리미 화면">
-      <span class="tag">학교 업무</span><b>급식지도 알리미</b>
-      <span class="desc">내 당번 차례를 폰 알림으로</span><span class="go">눌러서 열어보기 ↗</span>
+      <span class="txt"><span class="tag">학교 업무</span><b>급식지도 알리미</b>
+      <span class="desc">내 당번 차례를 폰 알림으로</span><span class="go">눌러서 열어보기 ↗</span></span>
     </a>
-    <a class="app s" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=ai-coach" target="_blank" rel="noopener">
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=health-bed" target="_blank" rel="noopener">
+      <img src="shots/health-bed.jpg" alt="보건실 침상 알리미 화면">
+      <span class="txt"><span class="tag">학교 업무 · 개발 중</span><b>보건실 침상 알리미</b>
+      <span class="desc">빈 침상 확인하고 알림으로 요청</span><span class="go">눌러서 열어보기 ↗</span></span>
+    </a>
+    <a class="app" href="https://kimkiyeop1-ux.github.io/teacher-apps/guide.html?id=ai-coach" target="_blank" rel="noopener">
       <img src="shots/ai-coach.jpg" alt="AI 지시 코칭 화면">
-      <span class="tag">AI 활용</span><b>AI 지시 코칭 프롬프트</b>
-      <span class="desc">AI에게 부탁하는 법 진단</span><span class="go">눌러서 열어보기 ↗</span>
+      <span class="txt"><span class="tag">AI 활용</span><b>AI 지시 코칭 프롬프트</b>
+      <span class="desc">AI에게 부탁하는 법 진단</span><span class="go">눌러서 열어보기 ↗</span></span>
     </a>
   </div>
   <p class="note s">이 중에 제가 직접 친 코드는 <b>한 줄도 없어요</b></p>
