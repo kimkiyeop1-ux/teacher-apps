@@ -25,7 +25,14 @@ function render(app, site) {
     ? `<a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">바로 열기</a>${extra}`
     : `<p class="g-private">학교 데이터를 다루는 앱이라 사용 가이드만 공개해요.</p>${extra}`;
 
-  $('#gShot').innerHTML = app.thumb ? `<img src="${esc(app.thumb)}" alt="${esc(app.title)} 화면">` : '';
+  // 시연 영상이 있으면 영상을, 없으면 캡처 이미지를 보여 줍니다.
+  // '동작 줄이기'를 켠 사람에게는 자동 재생하지 않고 재생 버튼만 보여 줍니다.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (app.video) {
+    $('#gShot').innerHTML = `<video src="${esc(app.video)}" ${app.thumb ? `poster="${esc(app.thumb)}"` : ''} muted loop playsinline controls preload="metadata" ${reduceMotion ? '' : 'autoplay'} aria-label="${esc(app.title)} 시연 영상"></video>`;
+  } else {
+    $('#gShot').innerHTML = app.thumb ? `<img src="${esc(app.thumb)}" alt="${esc(app.title)} 화면">` : '';
+  }
   const shot = $('#gShot img');
   if (shot) {
     const fit = () => $('#gShot').classList.toggle('is-portrait', shot.naturalHeight > shot.naturalWidth);

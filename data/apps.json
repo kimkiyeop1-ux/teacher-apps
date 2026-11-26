@@ -20,6 +20,7 @@
       "date": "",
       "url": "https://kimkiyeop1-ux.github.io/gym-metaverse/",
       "thumb": "shots/gym-metaverse.jpg",
+      "video": "videos/gym-metaverse.mp4",
       "tags": [
         "체육",
         "메타버스",
@@ -89,6 +90,7 @@
       "date": "",
       "url": "",
       "thumb": "shots/flagfootball.jpg",
+      "video": "videos/flagfootball.mp4",
       "tags": [
         "체육",
         "수행평가",
@@ -157,6 +159,7 @@
       "date": "",
       "url": "",
       "thumb": "shots/lunch-duty.jpg",
+      "video": "",
       "tags": [
         "급식",
         "당번",
@@ -298,6 +301,7 @@
       "date": "",
       "url": "https://kimkiyeop1-ux.github.io/sports-day-app/dev/",
       "thumb": "shots/sports-day.jpg",
+      "video": "",
       "tags": [
         "체육대회",
         "대진표",
@@ -363,6 +367,7 @@
       "date": "",
       "url": "https://claude.ai/artifact/DreepvuSknkuSBFH31bKZB",
       "thumb": "shots/ai-coach.jpg",
+      "video": "videos/ai-coach.mp4",
       "tags": [
         "AI",
         "프롬프트",
