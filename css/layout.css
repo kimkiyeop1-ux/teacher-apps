@@ -100,16 +100,17 @@ a { color: inherit; }
 .card-link:hover { border-color: var(--color-accent); }
 
 /* 마우스를 올리면 카드가 살짝 커지는 효과 (크기는 theme.css의 --card-hover-scale)
-   마우스가 있는 기기에서만, '동작 줄이기'를 켠 사람에게는 적용하지 않아요 */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .card-link {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  }
+   마우스를 쓸 수 있는 기기라면 어디서나 커져요 (터치스크린 노트북 포함) */
+@media (any-hover: hover) {
   .card-link:hover,
   .card-link:focus-visible {
     transform: scale(var(--card-hover-scale));
     box-shadow: 0 14px 30px -18px rgba(30, 51, 40, 0.55);
   }
+}
+/* 부드럽게 커지는 움직임은 '애니메이션 효과'(동작 줄이기)를 끄지 않은 사람에게만 */
+@media (prefers-reduced-motion: no-preference) {
+  .card-link { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
 }
 .thumb {
   aspect-ratio: 16 / 10; overflow: hidden;
