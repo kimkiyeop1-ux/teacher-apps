@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>플래그 풋볼 수행평가</title>
+<meta name="theme-color" content="#1E5A3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="플래그풋볼">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&amp;family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>플래그 풋볼 수행평가<small>2학년 · 패스&amp;캐치 · 공격 전략</small></h1>
+    <label class="sel">소리
+      <select id="soundMode" aria-label="10초 카운트 소리">
+        <option value="voice" selected="">음성</option>
+        <option value="beep">삐 소리</option>
+        <option value="off">끄기</option>
+      </select>
+    </label>
+  </header>
+
+  <div class="nav">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-view="measure" aria-selected="false">패스</button>
+      <button role="tab" data-view="strat" aria-selected="true">전략</button>
+      <button role="tab" data-view="records" aria-selected="false">기록</button>
+      <button role="tab" data-view="setup" aria-selected="false">명단</button>
+    </div>
+    <select id="classSel" aria-label="반 선택"><option value="1" selected="">1반</option></select>
+  </div>
+
+  <!-- 패스&캐치 -->
+  <section class="view" id="view-measure" hidden="">
+    <div class="pair" id="pairBox">
+      <div class="slot" data-slot="0"><button class="pick" type="button"><span class="tag">A</span><span class="who"><b>1번 김하늘</b><small>최고 12개 · 25점 · 1/3회</small></span></button><button class="role" type="button">기록함 (눌러서 도우미로)</button></div>
+      <div class="slot" data-slot="1"><button class="pick" type="button"><span class="tag">B</span><span class="who"><b>2번 이바다</b><small>최고 12개 · 25점 · 1/3회</small></span></button><button class="role" type="button">기록함 (눌러서 도우미로)</button></div>
+    </div>
+    <div class="notice" id="noRoster" hidden="">명단이 없어서 타이머만 쓸 수 있어요. <button class="link" type="button" data-go="setup">명단 불러오기</button></div>
+
+    <section class="board" id="board" aria-label="타이머">
+      <div class="time" id="timeText" role="timer" aria-live="off">0:30</div>
+      <div class="setter" id="setter" aria-disabled="false">
+        <div class="field">
+          <button type="button" data-step="min" data-dir="-1" aria-label="분 줄이기">−</button>
+          <input id="minIn" type="number" inputmode="numeric" min="0" max="9" value="0" aria-label="분" style="">
+          <span>분</span>
+          <button type="button" data-step="min" data-dir="1" aria-label="분 늘리기">+</button>
+        </div>
+        <div class="field">
+          <button type="button" data-step="sec" data-dir="-1" aria-label="초 줄이기">−</button>
+          <input id="secIn" type="number" inputmode="numeric" min="0" max="59" value="30" aria-label="초" style="">
+          <span>초</span>
+          <button type="button" data-step="sec" data-dir="1" aria-label="초 늘리기">+</button>
+        </div>
+        <div class="presets" id="presets">
+          <button type="button" data-sec="30" aria-pressed="true">30초</button>
+          <button type="button" data-sec="60" aria-pressed="false">1분</button>
+          <button type="button" data-sec="120" aria-pressed="false">2분</button>
+        </div>
+      </div>
+    </section>
+
+    <button class="count" id="countBtn" type="button" aria-label="개수 더하기" disabled="">
+      <span class="num" id="countText">0</span>
+      <span class="hint" id="countHint">시작을 누르면 셀 수 있어요</span>
+    </button>
+
+    <div class="status">
+      <div class="score" aria-live="polite"><b id="scoreText">20점</b><span>척도표 배점</span></div>
+      <button class="ghost" id="minusBtn" type="button" disabled="">−1 빼기</button>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn" type="button">시작</button>
+      <button id="resetBtn" type="button">초기화</button>
+    </div>
+    <div class="saveRow" id="saveRow" hidden="">
+      <button id="saveBtn" class="big" type="button">김하늘, 이바다 0개 저장</button>
+      <button id="saveDoneBtn" class="big" type="button">저장하고 평가 완료</button>
+      <p class="saveNote" id="saveNote"></p>
+    </div>
+    <button class="ghost bigBtn" id="bigBtn" type="button" hidden="">결과 크게 보기</button>
+    <p class="msg" id="msg" aria-live="polite">11/28 14:45 저장 · 김하늘 1회차 저장 (최고 12개, 남은 기회 2회) · 이바다 1회차 저장 (최고 12개, 남은 기회 2회)</p>
+
+    <details>
+      <summary>척도표 보기</summary>
+      <table class="scale" id="scaleTable"><tbody><tr><td>36개 이상</td><td>50점</td></tr><tr><td>31~35개</td><td>45점</td></tr><tr><td>26~30개</td><td>40점</td></tr><tr><td>21~25개</td><td>35점</td></tr><tr><td>16~20개</td><td>30점</td></tr><tr class=""><td>11~15개</td><td>25점</td></tr><tr class="hit"><td>10개 이하</td><td>20점</td></tr></tbody></table>
+    </details>
+  </section>
+
+  <!-- 공격 전략 -->
+  <section class="view" id="view-strat">
+    <div class="notice" id="stEmpty" hidden="">명단을 먼저 불러오세요. <button class="link" type="button" data-go="setup">명단 불러오기</button></div>
+    <div id="stBody" class="view">
+      <div class="teams" id="teamList"><button type="button" aria-pressed="true">1조 (4명)</button><button type="button" class="add">+ 새 조</button></div>
+      <div class="card" id="teamCard">
+        <div class="dlg-head"><h2 id="teamTitle">1반 1조</h2><button class="ghost" type="button" id="teamEditBtn">조 편집</button></div>
+        <div class="members" id="members"><button type="button" class="mem"><b>3 박구름</b><small>미측정 · 누르면 도우미</small></button><button type="button" class="mem"><b>4 최별빛</b><small>미측정 · 누르면 도우미</small></button><button type="button" class="mem"><b>5 정새봄</b><small>미측정 · 누르면 도우미</small></button><button type="button" class="mem"><b>6 한여름</b><small>미측정 · 누르면 도우미</small></button></div>
+        <button class="ghost helperAdd" type="button" id="helperAddBtn">+ 다른 조 학생 데려오기 (도우미·결석생 보충)</button>
+        <p class="help" style="margin:0;font-size:.8rem">조원을 누를 때마다 기록함 → 도우미 → 오늘 결석 순서로 바뀌어요. '오늘 결석'은 오늘만 적용되고 내일이면 저절로 풀려요. 결석했던 학생은 그날 평가하는 조에 데려와서 한 번 눌러 '보충 · 기록함'으로 바꾸면 돼요. 데려온 학생을 빼려면 아래 버튼을 다시 눌러 선택을 풀어요.</p>
+      </div>
+      <div class="notice" id="noTeam" hidden="">조를 먼저 만들어 주세요. 위의 '+ 새 조'를 누르세요.</div>
+
+      <div id="judge" class="view" style="gap:8px">
+        <div class="ptabs" id="playTabs" role="group" aria-label="평가할 작전">
+          <button type="button" data-p="0" aria-pressed="true">① 스윕</button>
+          <button type="button" data-p="1" aria-pressed="false">② 슬랜트</button>
+          <button type="button" data-p="2" aria-pressed="false">③ 페이크</button>
+        </div>
+        <p class="help" style="margin:0;font-size:.82rem">평가할 작전을 고르고, 조원 포지션을 누른 뒤 ○/×로 판정해 저장하세요. 작전마다 따로 저장되고, 세 작전의 성공 개수를 합쳐 점수가 돼요. 이미 그 작전에 성공한 학생은 '① 완료 · 기록 안 함'으로 표시되고 다시 기록되지 않아요. 인원이 모자라면 위의 '+ 도우미 데려오기'를 누르세요.</p>
+        <div class="play">
+          <div class="phead"><span class="lab" id="playLab">① 핸드오프 스윕</span><button class="snap" type="button" id="snapBtn" aria-label="스냅 4초 타이머">스냅 4초</button></div>
+          <div class="posgrid" id="posGrid"><div class="prow"><span class="who">박구름 </span><div class="pbtns"><button type="button" aria-pressed="false" disabled="" aria-label="박구름 C (다른 조원이 맡음)">C</button><button type="button" aria-pressed="true" aria-label="박구름 QB">QB</button><button type="button" aria-pressed="false" aria-label="박구름 RB">RB</button><button type="button" aria-pressed="false" aria-label="박구름 W2">W2</button></div></div><div class="prow"><span class="who">최별빛 </span><div class="pbtns"><button type="button" aria-pressed="true" aria-label="최별빛 C">C</button><button type="button" aria-pressed="false" disabled="" aria-label="최별빛 QB (다른 조원이 맡음)">QB</button><button type="button" aria-pressed="false" aria-label="최별빛 RB">RB</button><button type="button" aria-pressed="false" aria-label="최별빛 W2">W2</button></div></div><div class="prow"><span class="who">정새봄 </span><div class="pbtns"><button type="button" aria-pressed="false" disabled="" aria-label="정새봄 C (다른 조원이 맡음)">C</button><button type="button" aria-pressed="false" disabled="" aria-label="정새봄 QB (다른 조원이 맡음)">QB</button><button type="button" aria-pressed="false" aria-label="정새봄 RB">RB</button><button type="button" aria-pressed="false" aria-label="정새봄 W2">W2</button></div></div><div class="prow"><span class="who">한여름 </span><div class="pbtns"><button type="button" aria-pressed="false" disabled="" aria-label="한여름 C (다른 조원이 맡음)">C</button><button type="button" aria-pressed="false" disabled="" aria-label="한여름 QB (다른 조원이 맡음)">QB</button><button type="button" aria-pressed="false" aria-label="한여름 RB">RB</button><button type="button" aria-pressed="false" aria-label="한여름 W2">W2</button></div></div></div>
+          <p class="posWarn" id="posWarn" aria-live="polite"></p>
+          <div class="seg"><button class="ok" data-v="1" type="button" aria-pressed="false">○ 성공</button><button class="no" data-v="0" type="button" aria-pressed="false">× 실패</button></div>
+        </div>
+        <div class="stboard" aria-live="polite">
+          <div><span class="big1" id="stCount">−</span><small id="stSub">① 핸드오프 스윕 · 판정을 눌러 주세요</small></div>
+          <div style="text-align:right"><span class="big1" id="stPts">4명</span><small>기록할 조원</small></div>
+        </div>
+        <div class="saveRow">
+          <button id="stSave" class="big stSave" type="button" disabled="">기록 저장</button>
+          <button id="stSaveDone" class="big" type="button" disabled="" style="background:var(--surface);border:2px solid var(--ink);color:var(--ink);font-size:1rem;padding:12px">저장하고 평가 완료</button>
+          <button id="stBigBtn" class="ghost" type="button" disabled="">결과 크게 보기</button>
+          <button id="stClear" class="ghost" type="button">판정 지우기</button>
+          <p class="saveNote" id="stNote">포지션 미등록: 정새봄, 한여름</p>
+        </div>
+        <p class="msg" id="stMsg" aria-live="polite"></p>
+      </div>
+      <details>
+        <summary>척도표 보기</summary>
+        <table class="scale" id="stScale"><tbody><tr><td>3개</td><td>50점</td></tr><tr><td>2개</td><td>40점</td></tr><tr><td>1개</td><td>30점</td></tr><tr><td>0개</td><td>20점</td></tr><tr><td>미참여</td><td>10점</td></tr></tbody></table>
+      </details>
+    </div>
+  </section>
+
+  <!-- 기록 -->
+  <section class="view" id="view-records" hidden="">
+    <div class="notice" id="recEmpty" hidden="">명단을 먼저 불러오세요. <button class="link" type="button" data-go="setup">명단 불러오기</button></div>
+    <div id="recBody">
+      <div class="summary">
+        <p id="recSummary">1반 8명 · 패스 측정 0명 · 전략 측정 0명 (✓ 평가 완료)</p>
+        <span class="help">학생을 누르면 회차별 기록을 볼 수 있어요</span>
+      </div>
+      <div class="filters" id="recFilter" role="group" aria-label="보기">
+        <button type="button" data-f="all" aria-pressed="true">전체</button>
+        <button type="button" data-f="pass" aria-pressed="false">패스 미측정</button>
+        <button type="button" data-f="strat" aria-pressed="false">전략 미측정</button>
+        <button type="button" data-f="open" aria-pressed="false">평가 미완료</button>
+        <button type="button" data-f="recent" aria-pressed="false">최근 저장순</button>
+      </div>
+      <div class="list" id="recList" style="margin-top:10px"><div class="row head"><span>번호</span><span>이름</span><span style="text-align: right;">패스</span><span style="text-align: right;">전략</span></div><button type="button" class="row todo"><span class="id">2101</span><span class="nm">김하늘</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2102</span><span class="nm">이바다</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2103</span><span class="nm">박구름</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2104</span><span class="nm">최별빛</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2105</span><span class="nm">정새봄</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2106</span><span class="nm">한여름</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2107</span><span class="nm">윤가을</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button><button type="button" class="row todo"><span class="id">2108</span><span class="nm">서겨울</span><span class="ct"><b>−</b><small></small></span><span class="ct"><b>−</b><small></small></span></button></div>
+      <div class="copybox" style="margin-top:12px">
+        <p id="copyHelp">전체 반 학생의 최고 기록이 학번과 함께 복사돼요. 구글 시트 맨 아래 노란 '붙여넣기(앱기록)' 탭의 A1 칸을 누르고 붙여넣으면 끝이에요. '학생기록' 탭 M~P열은 학번으로 자동으로 채워져요. 매번 전체를 덮어쓰니 같은 곳에 붙여넣기만 하면 돼요.</p>
+        <div class="btnrow">
+          <button class="primary" id="copyAllBtn" type="button" style="flex:1">시트용 기록 복사 (전체 반)</button>
+        </div>
+        <textarea id="copyFallback" readonly="" hidden="" aria-label="복사할 기록" style=""></textarea>
+        <p class="msg" id="copyMsg" aria-live="polite" style="text-align:left"></p>
+      </div>
+      <div class="copybox" style="margin-top:12px">
+        <p><b style="color:var(--ink);font-size:.95rem">폰 → 컴퓨터로 옮기기</b><br>수업 후 폰에서 '기록 보내기'를 눌러 카카오톡 나와의 채팅이나 내 메일로 파일을 보내고, 학년실 컴퓨터 앱에서 그 파일을 '받은 파일 합치기'로 불러오세요. 같은 기록은 한 번만 들어가요.</p>
+        <p class="xinfo" id="xferInfo">아직 저장한 기록이 없어요 · 아직 보낸 적 없음</p>
+        <div class="btnrow">
+          <button class="primary" id="sendBtn" type="button">기록 보내기</button>
+          <button class="ghost" id="saveFileBtn" type="button">파일로 저장</button>
+          <label class="ghost filebtn">받은 파일 합치기<input type="file" id="importFile" accept=".json,application/json,text/plain" hidden="" value="" style=""></label>
+        </div>
+        <p class="msg" id="xferMsg" aria-live="polite" style="text-align:left"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 명단 -->
+  <section class="view" id="view-setup" hidden="">
+    <div class="card">
+      <h2>명단 불러오기</h2>
+      <div class="help">
+        <ol>
+          <li>구글 시트 '학생기록' 탭에서 A열(학번)과 B열(이름)을 2101부터 마지막 학생까지 선택해 복사하세요.</li>
+          <li>아래 칸에 붙여넣고 '명단 저장'을 누르세요.</li>
+        </ol>
+      </div>
+      <textarea id="rosterIn" placeholder="2101	김하늘
+2102	이바다
+…" style=""></textarea>
+      <div class="btnrow"><button class="primary" id="rosterSave" type="button">명단 저장</button></div>
+      <p class="msg" id="rosterMsg" aria-live="polite" style="text-align:left">1개 반 8명 저장됨 (1반 8명)</p>
+    </div>
+    <div class="card">
+      <h2>백업과 옮기기</h2>
+      <p class="help">'백업 복사'를 누르면 명단, 조 구성, 모든 기록이 글자 묶음으로 복사돼요. 메모나 문서에 붙여넣어 보관했다가, 아래 칸에 붙여넣고 복원하면 돼요. 다른 기기로 옮기거나 다른 선생님 기기의 기록과 합칠 때도 써요. 학생 이름과 점수가 들어 있으니 본인만 보는 곳에 보관하세요.</p>
+      <div class="btnrow"><button class="primary" id="backupBtn" type="button">백업 복사</button></div>
+      <textarea id="backupOut" readonly="" hidden="" aria-label="백업 내용" style=""></textarea>
+      <textarea id="restoreIn" placeholder="복원할 백업 내용을 여기에 붙여넣으세요" aria-label="복원할 백업" style=""></textarea>
+      <div class="btnrow">
+        <button class="ghost" id="mergeBtn" type="button">지금 기록과 합치기</button>
+        <button class="danger" id="restoreBtn" type="button">백업으로 바꾸기</button>
+      </div>
+      <p class="msg" id="backupMsg" aria-live="polite" style="text-align:left"></p>
+    </div>
+    <div class="card">
+      <h2>저장 위치</h2>
+      <p class="help">명단, 조 구성, 기록은 지금 쓰는 이 기기의 이 브라우저에만 저장되고 다른 곳으로 보내지지 않아요. 브라우저 데이터를 지우거나 다른 기기에서 열면 보이지 않으니, 수업이 끝나면 '기록' 탭에서 시트로 옮겨 두세요.</p>
+      <p class="help" id="storeInfo">지금 이 기기에 학생 8명, 패스 회차 0건, 전략 회차 0건이 있어요.</p>
+      <div class="btnrow"><button class="danger" id="wipeBtn" type="button">모든 데이터 지우기</button></div>
+    </div>
+  </section>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

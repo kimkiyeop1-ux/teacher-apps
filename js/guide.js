@@ -25,19 +25,9 @@ function render(app, site) {
     ? `<a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">바로 열기</a>${extra}`
     : `<p class="g-private">학교 데이터를 다루는 앱이라 사용 가이드만 공개해요.</p>${extra}`;
 
-  // 시연 영상이 있으면 영상을, 없으면 캡처 이미지를 보여 줍니다.
+  // 기능 소개 애니메이션(demo)이 있으면 그것을, 없으면 시연 영상, 그것도 없으면 캡처 이미지를 보여 줍니다.
   // '동작 줄이기'를 켠 사람에게는 자동 재생하지 않고 재생 버튼만 보여 줍니다.
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (app.video) {
-    $('#gShot').innerHTML = `<video src="${esc(app.video)}" ${app.thumb ? `poster="${esc(app.thumb)}"` : ''} muted loop playsinline controls preload="metadata" ${reduceMotion ? '' : 'autoplay'} aria-label="${esc(app.title)} 시연 영상"></video>`;
-  } else {
-    $('#gShot').innerHTML = app.thumb ? `<img src="${esc(app.thumb)}" alt="${esc(app.title)} 화면">` : '';
-  }
-  const shot = $('#gShot img');
-  if (shot) {
-    const fit = () => $('#gShot').classList.toggle('is-portrait', shot.naturalHeight > shot.naturalWidth);
-    shot.complete ? fit() : shot.addEventListener('load', fit);
-  }
+  showMedia(app);
 
   const list = (arr) => arr && arr.length ? `<ul class="g-list">${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
   const steps = g.steps && g.steps.length
@@ -53,6 +43,34 @@ function render(app, site) {
     section('사용 방법', steps) +
     section('자주 묻는 질문', faq) +
     (openable ? `<p class="g-bottom"><a class="btn btn--main" href="${esc(app.url)}" target="_blank" rel="noopener">${esc(app.title)} 열기</a></p>` : '');
+}
+
+// 가이드 위쪽 그림 자리: 애니메이션 → 영상 → 이미지 순서로 있는 것을 보여 줌
+function showMedia(app) {
+  const box = $('#gShot');
+  const fallback = () => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    box.classList.remove('demo-host');
+    if (app.video) {
+      box.innerHTML = `<video src="${esc(app.video)}" ${app.thumb ? `poster="${esc(app.thumb)}"` : ''} muted loop playsinline controls preload="metadata" ${reduceMotion ? '' : 'autoplay'} aria-label="${esc(app.title)} 시연 영상"></video>`;
+    } else {
+      box.innerHTML = app.thumb ? `<img src="${esc(app.thumb)}" alt="${esc(app.title)} 화면">` : '';
+    }
+    const shot = $('#gShot img');
+    if (shot) {
+      const fit = () => box.classList.toggle('is-portrait', shot.naturalHeight > shot.naturalWidth);
+      shot.complete ? fit() : shot.addEventListener('load', fit);
+    }
+  };
+  if (app.demo && window.DemoKit) {
+    const s = document.createElement('script');
+    s.src = app.demo;
+    s.onload = () => { if (!window.DemoKit.mount(box, app.id)) fallback(); };
+    s.onerror = fallback;
+    document.body.appendChild(s);
+  } else {
+    fallback();
+  }
 }
 
 function notFound() {

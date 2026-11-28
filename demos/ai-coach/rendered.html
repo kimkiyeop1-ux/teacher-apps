@@ -1,0 +1,409 @@
+<!doctype html>
+<html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="UTF-8">
+<title>AI 지시 코칭 프롬프트</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;display=swap">
+<style>
+  /* Layout: one column. Top = how-to + copyable prompt + paste box. Bottom = the rendered feedback report (same design as the original personal feedback page). */
+  :root{
+    --bg:#f6f3ee; --card:#fff; --ink:#22201c; --sub:#6f6a61; --line:#e6e0d6; --soft:#faf7f2; --soft2:#f3f1ed; --note:#efeae1;
+    --clay:#c96442; --clay-soft:#f6e3da; --green:#2f7d5b; --green-soft:#e2f1e9; --green-ink:#1f4d39;
+    --blue:#3a5fb0; --blue-soft:#e3eafa; --amber:#a86a12; --amber-soft:#f8ecd4;
+    --violet:#6b4fb3; --violet-soft:#ece6fa; --red:#b2473e; --red-soft:#f8e1de;
+    --code-bg:#2a2723; --code-ink:#f2efe9; --code-k:#f0a987; --code-btn:#4a453e;
+    --f-body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#1a1917; --card:#24221f; --ink:#eeebe5; --sub:#a39d93; --line:#3a3631; --soft:#2c2925; --soft2:#2c2925; --note:#2a2723;
+    --clay:#e0805f; --clay-soft:#43291f; --green:#6cc49b; --green-soft:#1f3a2d; --green-ink:#bfe8d3;
+    --blue:#8fa9ec; --blue-soft:#232d47; --amber:#e3a94f; --amber-soft:#3d2f17;
+    --violet:#b6a0ef; --violet-soft:#2f2645; --red:#ec8f86; --red-soft:#46241f;
+    --code-bg:#100f0e; --code-ink:#f2efe9; --code-k:#f0a987; --code-btn:#3a3631; color-scheme:dark }}
+  :root[data-theme="dark"]{
+    --bg:#1a1917; --card:#24221f; --ink:#eeebe5; --sub:#a39d93; --line:#3a3631; --soft:#2c2925; --soft2:#2c2925; --note:#2a2723;
+    --clay:#e0805f; --clay-soft:#43291f; --green:#6cc49b; --green-soft:#1f3a2d; --green-ink:#bfe8d3;
+    --blue:#8fa9ec; --blue-soft:#232d47; --amber:#e3a94f; --amber-soft:#3d2f17;
+    --violet:#b6a0ef; --violet-soft:#2f2645; --red:#ec8f86; --red-soft:#46241f;
+    --code-bg:#100f0e; --code-ink:#f2efe9; --code-k:#f0a987; --code-btn:#3a3631; color-scheme:dark }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65}
+  .wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1{font-size:clamp(26px,5vw,34px);line-height:1.3;margin:8px 0 12px;font-weight:800;text-wrap:balance}
+  h2{font-size:22px;margin:0 0 6px;font-weight:800;text-wrap:balance}
+  .eyebrow{font-size:13px;color:var(--clay);font-weight:700;letter-spacing:.04em}
+  .lead{font-size:17.5px;margin:0;max-width:65ch}
+  .sub{color:var(--sub);margin:0 0 14px}
+  button{font-family:var(--f-body)}
+  button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--clay);outline-offset:2px}
+
+  /* ---------- tool area ---------- */
+  .tool{padding-block:44px 28px;display:flex;flex-direction:column;gap:32px}
+  .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+  .steps li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;counter-increment:s;min-width:0}
+  .steps li::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--clay);color:#fff;font-weight:800;font-size:14px;margin-bottom:8px}
+  .steps b{display:block;margin-bottom:2px}
+  .steps span{color:var(--sub);font-size:14.5px}
+
+  .board{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:16px;padding:44px 22px 22px;font-size:14.5px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;max-height:460px;overflow:auto;min-width:0}
+  .board .k{color:var(--code-k);font-weight:700}
+  .copy{position:absolute;top:12px;right:12px;border:0;border-radius:8px;padding:7px 14px;background:var(--code-btn);color:var(--code-ink);font-weight:700;font-size:13px;cursor:pointer}
+  details{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+  details summary{cursor:pointer;font-weight:700}
+  details .board{margin-top:12px}
+
+  .paste{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .paste label{display:block;font-weight:700;margin-bottom:8px}
+  textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);padding:12px;font:14px/1.5 ui-monospace,Consolas,monospace}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  .btn{border:0;border-radius:10px;padding:11px 20px;font-weight:700;font-size:15px;cursor:pointer;background:var(--clay);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .msg{font-size:14.5px}
+  .msg.err{color:var(--red)} .msg.ok{color:var(--green)}
+  .privacy{font-size:13.5px;color:var(--sub);margin-top:10px}
+
+  /* ---------- report ---------- */
+  .report{border-top:2px dashed var(--line);padding-block:36px 60px}
+  .banner{background:var(--amber-soft);color:var(--ink);border-radius:12px;padding:10px 16px;font-size:14.5px;margin-bottom:22px}
+  .banner b{color:var(--amber)}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:14px;color:var(--sub)}
+  .stat b{display:block;font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0 0}
+  .sum{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+  .sum b{display:block;font-size:15px;margin-bottom:4px}
+  .sum p{font-size:14px;color:var(--sub);margin:0}
+  .sum.good b{color:var(--green)} .sum.fix b{color:var(--clay)} .sum.try b{color:var(--blue)}
+
+  nav.filters{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:14px 0;margin-top:22px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer}
+  .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .list{padding:22px 0 10px;display:flex;flex-direction:column;gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 9px;margin-bottom:12px}
+  .t-good{background:var(--green-soft);color:var(--green)}
+  .t-how{background:var(--blue-soft);color:var(--blue)}
+  .t-token{background:var(--amber-soft);color:var(--amber)}
+  .t-skill{background:var(--violet-soft);color:var(--violet)}
+  .t-conn{background:var(--clay-soft);color:var(--clay)}
+  .t-vague{background:var(--red-soft);color:var(--red)}
+  .say{display:flex;gap:12px;align-items:flex-start}
+  .avatar{flex:none;width:36px;height:36px;border-radius:50%;background:var(--clay);display:grid;place-items:center}
+  .bubble{background:var(--soft);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:12px 16px;font-size:17px;font-weight:600;min-width:0}
+  .why{margin:12px 0 0 48px;font-size:15.5px}
+  .why .src{display:block;margin-top:6px;font-size:13px;color:var(--sub)}
+  .ba{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0 48px}
+  .ba div{border-radius:12px;padding:12px 14px;font-size:14.5px;white-space:pre-line;min-width:0}
+  .ba .before{background:var(--soft2);color:var(--sub)}
+  .ba .after{background:var(--green-soft);color:var(--green-ink)}
+  .ba small{display:block;font-weight:700;font-size:12px;margin-bottom:4px;opacity:.8}
+
+  section.box{margin:34px 0 0}
+  section.box h2{margin-bottom:12px}
+  .scores{list-style:none;margin:0;padding:6px 18px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+  .scores li{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:6px 16px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+  .scores li:last-child{border:0}
+  .scores .p{font-weight:600;min-width:0}
+  .scores .c{grid-column:1/-1;font-size:14px;color:var(--sub)}
+  .meter{display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-weight:700}
+  .meter i{flex:1;height:8px;border-radius:4px;background:var(--soft2);position:relative;overflow:hidden}
+  .meter i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--clay);border-radius:4px}
+  .one{background:var(--card);border:1px solid var(--line);border-left-width:1px;border-radius:16px;padding:18px 20px;font-size:17px;font-weight:600}
+  .tplbox{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:16px;padding:44px 22px 20px;font-size:15px;white-space:pre-wrap;line-height:1.8;overflow-wrap:anywhere}
+  .bye{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;font-size:17px;margin-top:34px}
+
+  @media (max-width:640px){
+    .steps,.summary{grid-template-columns:1fr}
+    .ba{grid-template-columns:1fr;margin-left:0}
+    .why{margin-left:0}
+    .scores li{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="wrap tool">
+  <header>
+    <div class="eyebrow">선생님을 위한 AI 활용 코칭</div>
+    <h1>AI에게 일 시키는 방식, 맞춤 피드백 페이지로 받기</h1>
+    <p class="lead">아래 프롬프트를 평소 쓰는 AI(ChatGPT, Gemini, Claude 등)에 붙여 넣고, AI가 준 답변을 이 페이지에 다시 붙여 넣으면 나만의 피드백 페이지가 만들어져요. 설치는 필요 없어요.</p>
+  </header>
+
+  <section>
+    <h2>사용법</h2>
+    <ol class="steps">
+      <li><b>프롬프트 복사</b><span>아래 프롬프트를 복사해서 쓰는 AI 채팅창에 붙여 넣어요.</span></li>
+      <li><b>내 지시 채워 보내기</b><span>최근 AI에게 보낸 지시 5~10개를 빈칸에 넣어요. 학생 이름 등은 ○○으로 바꿔요.</span></li>
+      <li><b>답변 붙여 넣기</b><span>AI 답변(코드 블록)을 통째로 복사해서 아래 칸에 붙여 넣고 버튼을 눌러요.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>① 코칭 프롬프트</h2>
+    <p class="sub">어떤 AI에서든 쓸 수 있어요.</p>
+    <div class="board" id="promptA"><button class="copy" type="button" data-target="promptA">복사</button>너는 교사가 AI를 더 잘 쓰도록 돕는 코치야. 아래는 내가 최근 AI에게 보낸 질문과 지시들이야. 이걸 보고 내가 AI에게 일을 시키는 방식에 대해 피드백해줘.
+
+<span class="k">[내 정보]</span> (모르면 비워둬도 돼)
+- 담당 과목·업무:
+- 주로 쓰는 AI:
+- AI에게 자주 시키는 일:
+
+<span class="k">[최근 지시]</span> (학생 이름 등 개인정보는 ○○으로 바꿈)
+1.
+2.
+3.
+4.
+5.
+
+<span class="k">[피드백 규칙]</span>
+- 친한 동료처럼 반말 일상어로 말해. 이런 느낌이야:
+  "이런 일을 시킬 때는 이런 식으로 시키는 게 내가 이해하기 쉬워."
+  "이런 걸 원하면 이렇게 지시하는 게 더 빨리 끝나고 덜 피곤해."
+  "이런 일은 매번 설명하지 말고 저장된 지침으로 만들어 두는 게 나아."
+  "이런 일은 이미지·영상 전용 도구를 쓰는 게 퀄리티가 더 높아."
+  "이 프롬프트는 너무 모호해서 여러 번 주고받게 돼."
+- 잘한 점을 먼저, 고칠 점은 비난 없이 건설적으로.
+- 내가 붙여 넣은 지시만 근거로 해. 짐작이면 why 끝에 (짐작)이라고 써.
+- 반복 업무는 내가 쓰는 AI에 맞춰 안내해 (ChatGPT는 GPTs·프로젝트, Gemini는 Gems, Claude는 프로젝트·스킬).
+- 사람 이름, 연락처, 성적, 상담·선도 내용 같은 개인정보는 절대 쓰지 마.
+
+<span class="k">[출력 규칙]</span>
+- 설명이나 인사 없이, 아래 형식의 JSON을 코드 블록 하나로만 출력해. 캔버스나 아티팩트로 만들지 마.
+- items는 8~14개. good은 2개 이상, 나머지 종류도 근거가 있을 때만 골고루.
+- f는 good(잘하고 있어), how(이렇게 시켜줘), token(시간·피로도), skill(저장된 지침), conn(도구 추천), vague(너무 모호해) 중 하나.
+- before/after는 고칠 점 카드에만 넣고, 개인정보 없는 일반 예시로 써. 필요 없으면 빈 문자열.
+- scores에는 내가 붙여 넣은 지시마다 하나씩, 지시를 개인정보 없이 짧게 요약해서 넣어. clarity는 1~5 정수.
+
+```json
+{
+  "headline": "한 줄 총평 (반말)",
+  "lead": "전체 요약 2~3문장 (반말)",
+  "summary": {"good": "잘하고 있는 것 요약", "fix": "바꾸면 좋은 것 요약", "try": "새로 해볼 것 요약"},
+  "scores": [{"prompt": "지시 요약", "clarity": 4, "comment": "한 줄 코멘트"}],
+  "items": [{"f": "how", "say": "말풍선 한 문장", "why": "이유 2~3문장", "src": "근거: 3번 지시", "before": "지금 지시 예시", "after": "이렇게 바꾸면"}],
+  "next_one": "다음 주에 딱 하나만 바꾼다면",
+  "template": "내 업무에 맞춘 지시 템플릿 (줄바꿈은 \n)"
+}
+```</div>
+
+    <details>
+      <summary>AI가 이전 대화를 기억하는 경우: 지시를 모으지 않는 버전</summary>
+      <p class="sub" style="margin-top:8px">대화 기억(메모리)이나 이전 대화 참고 기능이 켜진 AI에서만 돼요. 위 프롬프트에서 [최근 지시] 부분만 아래로 바꿔서 보내면 돼요.</p>
+      <div class="board" id="promptB"><button class="copy" type="button" data-target="promptB">복사</button><span class="k">[최근 지시]</span>
+지시를 붙여 넣지 않았어. 네가 기억하거나 참고할 수 있는 나와의 이전 대화에서 내가 보낸 지시들을 근거로 해줘. 이전 대화를 실제로 볼 수 없으면 JSON을 만들지 말고 "볼 수 없어. 최근 지시를 붙여 넣어줘"라고만 답해.</div>
+    </details>
+  </section>
+
+  <section class="paste">
+    <h2 style="margin-bottom:10px">② AI 답변 붙여 넣기</h2>
+    <label for="pasteBox">AI가 준 답변을 통째로 붙여 넣어요 (앞뒤에 다른 말이 섞여 있어도 괜찮아요)</label>
+    <textarea id="pasteBox" placeholder="{ &quot;headline&quot;: &quot;...&quot;, ... }" style="">```json
+{
+  "headline": "필요한 건 정확히 아는데, 결과물 모양을 안 알려줘서 내가 자주 되물어.",
+  "lead": "수업 자료 만들 때 학년이랑 단원을 꼭 알려줘서 좋았어. 다만 '만들어줘'로 끝나는 지시가 많아서, 표로 줄지 한글 문서로 줄지 내가 골라야 했어. 매주 하는 가정통신문은 저장된 지침으로 만들어 두면 훨씬 편할 거야.",
+  "summary": {
+    "good": "학년·단원·분량 같은 조건을 잘 줌, 결과 보고 바로 구체적으로 고쳐 달라고 함",
+    "fix": "결과물 형태(표·문서·슬라이드) 먼저 말하기, 한 번에 여러 일 섞지 않기",
+    "try": "가정통신문 지침 저장해 두기, 실험 사진·삽화는 이미지 생성 도구 쓰기"
+  },
+  "scores": [
+    {
+      "prompt": "중2 과학 '물질의 구성' 형성평가 10문항 만들기",
+      "clarity": 4,
+      "comment": "학년·단원·문항 수까지 있어서 좋았어. 난이도만 더 있으면 완벽."
+    },
+    {
+      "prompt": "가정통신문 써줘 (현장체험학습)",
+      "clarity": 2,
+      "comment": "날짜·장소·준비물이 없어서 내가 다 지어내야 했어."
+    },
+    {
+      "prompt": "수행평가 채점기준표 표로 정리",
+      "clarity": 4,
+      "comment": "형태를 '표'로 정해줘서 한 번에 끝났어."
+    },
+    {
+      "prompt": "이거 좀 더 좋게 바꿔줘",
+      "clarity": 1,
+      "comment": "'좋게'가 뭔지 몰라서 세 번 주고받았어."
+    },
+    {
+      "prompt": "실험 안전수칙 포스터 그림 만들어줘",
+      "clarity": 3,
+      "comment": "내용은 분명한데 그림은 내가 잘 못 그려."
+    },
+    {
+      "prompt": "학부모 상담 일정 안내 문자 + 시간표 엑셀",
+      "clarity": 3,
+      "comment": "두 가지 일이 한 번에 섞여 있었어."
+    }
+  ],
+  "items": [
+    {
+      "f": "good",
+      "say": "학년이랑 단원, 문항 수까지 딱 알려주니까 한 번에 끝나.",
+      "why": "형성평가 만들 때 '중2, 물질의 구성, 10문항'까지 줘서 바로 만들 수 있었어. 이게 거의 모범답안이야.",
+      "src": "근거: 1번 지시",
+      "before": "",
+      "after": ""
+    },
+    {
+      "f": "good",
+      "say": "결과 보고 '2번 문제 더 쉽게'처럼 콕 집어 고쳐 달라고 하는 거 좋아.",
+      "why": "어디를 어떻게 고칠지 알려주면 나도 전체를 다시 안 만들고 그 부분만 고쳐. 시간이 확 줄어. (짐작: 다른 대화에서도 그랬을 것 같아)",
+      "src": "근거: 1번 지시 이후 대화",
+      "before": "",
+      "after": ""
+    },
+    {
+      "f": "how",
+      "say": "이런 일 시킬 때는 결과물 형태를 먼저 말해주는 게 내가 이해하기 쉬워.",
+      "why": "'만들어줘'로 끝나면 표인지, 한글 문서인지, 슬라이드인지 내가 골라야 해. 틀리면 처음부터 다시 만들어야 하고.",
+      "src": "근거: 2번, 5번 지시",
+      "before": "가정통신문 써줘",
+      "after": "현장체험학습 가정통신문을 A4 한 장 분량으로 써줘.\n날짜 5/23, 장소 국립과천과학관, 준비물 도시락."
+    },
+    {
+      "f": "vague",
+      "say": "'좀 더 좋게'는 너무 모호해서 여러 번 주고받게 돼.",
+      "why": "'좋게'가 더 짧게인지, 더 쉽게인지, 더 공손하게인지 몰라서 세 번이나 되물었어. 원하는 방향을 한 단어만 붙여줘.",
+      "src": "근거: 4번 지시",
+      "before": "이거 좀 더 좋게 바꿔줘",
+      "after": "학부모가 읽기 쉽게 문장을 더 짧고 부드럽게 바꿔줘."
+    },
+    {
+      "f": "token",
+      "say": "한 번에 두 가지 일을 섞으면 둘 다 어정쩡해져서 오히려 오래 걸려.",
+      "why": "상담 안내 문자와 시간표 엑셀을 한 번에 시키면, 내가 둘 사이를 오가면서 실수가 늘어. 하나 끝내고 다음 걸 시키는 게 더 빨라.",
+      "src": "근거: 6번 지시",
+      "before": "상담 일정 안내 문자랑 시간표 엑셀 만들어줘",
+      "after": "① 상담 일정 안내 문자 먼저\n② 끝나면 시간표 엑셀 따로"
+    },
+    {
+      "f": "skill",
+      "say": "가정통신문은 매번 설명하지 말고 저장된 지침으로 만들어 두는 게 나아.",
+      "why": "학교 이름, 인사말, 서식은 매번 같잖아. ChatGPT라면 GPTs나 프로젝트에 한 번 적어두면, 다음부터는 '현장체험학습 통신문'만 말해도 돼.",
+      "src": "근거: 2번 지시 (자주 시키는 일)",
+      "before": "",
+      "after": ""
+    },
+    {
+      "f": "conn",
+      "say": "실험 안전수칙 포스터 그림은 이미지 생성 도구로 시키는 게 퀄리티가 더 높아.",
+      "why": "나는 글이랑 구성은 잘 짜는데 그림은 잘 못 그려. 문구는 나한테 받고, 그림은 이미지 생성 도구(예: ChatGPT 이미지 생성, Canva)로 만드는 게 훨씬 나아.",
+      "src": "근거: 5번 지시",
+      "before": "",
+      "after": ""
+    },
+    {
+      "f": "how",
+      "say": "누가 읽을지 한마디만 붙여줘도 말투가 딱 맞아.",
+      "why": "같은 내용도 학생용, 학부모용, 교사용이면 말투랑 길이가 완전히 달라. 이걸 모르면 내가 중간쯤으로 써서 아무한테도 딱 안 맞아.",
+      "src": "근거: 2번, 6번 지시",
+      "before": "안내 문자 써줘",
+      "after": "학부모님께 보낼 안내 문자야. 3줄 이내, 존댓말로."
+    }
+  ],
+  "next_one": "지시 끝에 '결과물 형태'만 하나 붙이기. 예: '…표로 줘', '…A4 한 장 문서로', '…문자 3줄로'.",
+  "template": "[하고 싶은 것] 중2 과학 형성평가\n[결과물 형태] 표 / 한글 문서 / 슬라이드 / 문자\n[누가 보나] 학생 / 학부모 / 동료 교사\n[조건] 문항 수, 난이도, 분량\n[참고] 교과서 단원, 예전 자료"
+}
+```</textarea>
+    <div class="row">
+      <button class="btn" id="renderBtn" type="button">피드백 페이지 만들기</button>
+      <button class="btn ghost" id="sampleBtn" type="button">예시 보기</button>
+      <button class="btn ghost" id="clearBtn" type="button">지우기</button>
+      <span class="msg ok" id="msg" role="status">피드백 페이지를 만들었어요. 아래로 내려 보세요.</span>
+    </div>
+    <p class="privacy">붙여 넣은 내용은 이 브라우저 안에서만 쓰이고 어디로도 보내지지 않아요. 다음에 다시 열면 마지막 피드백이 이 브라우저에만 남아 있어요.</p>
+  </section>
+</div>
+
+<main class="wrap report" id="report">
+  <div class="banner" id="banner"><b>내 피드백이에요.</b> 이 브라우저에만 저장돼요.</div>
+  <div class="eyebrow">AI 코치 → 나에게 보내는 업무 지시 피드백</div>
+  <h1 id="headline">필요한 건 정확히 아는데, 결과물 모양을 안 알려줘서 내가 자주 되물어.</h1>
+  <p class="lead" id="lead">수업 자료 만들 때 학년이랑 단원을 꼭 알려줘서 좋았어. 다만 '만들어줘'로 끝나는 지시가 많아서, 표로 줄지 한글 문서로 줄지 내가 골라야 했어. 매주 하는 가정통신문은 저장된 지침으로 만들어 두면 훨씬 편할 거야.</p>
+  <div class="stats">
+    <div class="stat"><b id="sCount">6</b>분석한 지시</div>
+    <div class="stat"><b id="sAvg">2.8</b>평균 명확도 (5점)</div>
+    <div class="stat"><b id="sItems">8</b>피드백 카드</div>
+  </div>
+  <div class="summary">
+    <div class="sum good"><b>잘하고 있는 것</b><p id="sumGood">학년·단원·분량 같은 조건을 잘 줌, 결과 보고 바로 구체적으로 고쳐 달라고 함</p></div>
+    <div class="sum fix"><b>바꾸면 좋은 것</b><p id="sumFix">결과물 형태(표·문서·슬라이드) 먼저 말하기, 한 번에 여러 일 섞지 않기</p></div>
+    <div class="sum try"><b>새로 해볼 것</b><p id="sumTry">가정통신문 지침 저장해 두기, 실험 사진·삽화는 이미지 생성 도구 쓰기</p></div>
+  </div>
+
+  <nav class="filters" id="filters">
+    <button class="chip on" type="button" data-f="all">전체</button>
+    <button class="chip" type="button" data-f="good">잘하고 있어</button>
+    <button class="chip" type="button" data-f="how">이렇게 시켜줘</button>
+    <button class="chip" type="button" data-f="token">시간·피로도</button>
+    <button class="chip" type="button" data-f="skill">저장된 지침</button>
+    <button class="chip" type="button" data-f="conn">도구 추천</button>
+    <button class="chip" type="button" data-f="vague">너무 모호해</button>
+  </nav>
+  <div class="list" id="list"><article class="card" data-f="good"><span class="tag t-good">잘하고 있어</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">학년이랑 단원, 문항 수까지 딱 알려주니까 한 번에 끝나.</div></div>
+      <p class="why">형성평가 만들 때 '중2, 물질의 구성, 10문항'까지 줘서 바로 만들 수 있었어. 이게 거의 모범답안이야.<span class="src">근거: 1번 지시</span></p>
+      </article><article class="card" data-f="good"><span class="tag t-good">잘하고 있어</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">결과 보고 '2번 문제 더 쉽게'처럼 콕 집어 고쳐 달라고 하는 거 좋아.</div></div>
+      <p class="why">어디를 어떻게 고칠지 알려주면 나도 전체를 다시 안 만들고 그 부분만 고쳐. 시간이 확 줄어. (짐작: 다른 대화에서도 그랬을 것 같아)<span class="src">근거: 1번 지시 이후 대화</span></p>
+      </article><article class="card" data-f="how"><span class="tag t-how">이렇게 시켜줘</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">이런 일 시킬 때는 결과물 형태를 먼저 말해주는 게 내가 이해하기 쉬워.</div></div>
+      <p class="why">'만들어줘'로 끝나면 표인지, 한글 문서인지, 슬라이드인지 내가 골라야 해. 틀리면 처음부터 다시 만들어야 하고.<span class="src">근거: 2번, 5번 지시</span></p>
+      <div class="ba"><div class="before"><small>지금</small>가정통신문 써줘</div><div class="after"><small>이렇게 바꾸면</small>현장체험학습 가정통신문을 A4 한 장 분량으로 써줘.
+날짜 5/23, 장소 국립과천과학관, 준비물 도시락.</div></div></article><article class="card" data-f="vague"><span class="tag t-vague">너무 모호해</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">'좀 더 좋게'는 너무 모호해서 여러 번 주고받게 돼.</div></div>
+      <p class="why">'좋게'가 더 짧게인지, 더 쉽게인지, 더 공손하게인지 몰라서 세 번이나 되물었어. 원하는 방향을 한 단어만 붙여줘.<span class="src">근거: 4번 지시</span></p>
+      <div class="ba"><div class="before"><small>지금</small>이거 좀 더 좋게 바꿔줘</div><div class="after"><small>이렇게 바꾸면</small>학부모가 읽기 쉽게 문장을 더 짧고 부드럽게 바꿔줘.</div></div></article><article class="card" data-f="token"><span class="tag t-token">시간·피로도</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">한 번에 두 가지 일을 섞으면 둘 다 어정쩡해져서 오히려 오래 걸려.</div></div>
+      <p class="why">상담 안내 문자와 시간표 엑셀을 한 번에 시키면, 내가 둘 사이를 오가면서 실수가 늘어. 하나 끝내고 다음 걸 시키는 게 더 빨라.<span class="src">근거: 6번 지시</span></p>
+      <div class="ba"><div class="before"><small>지금</small>상담 일정 안내 문자랑 시간표 엑셀 만들어줘</div><div class="after"><small>이렇게 바꾸면</small>① 상담 일정 안내 문자 먼저
+② 끝나면 시간표 엑셀 따로</div></div></article><article class="card" data-f="skill"><span class="tag t-skill">저장된 지침</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">가정통신문은 매번 설명하지 말고 저장된 지침으로 만들어 두는 게 나아.</div></div>
+      <p class="why">학교 이름, 인사말, 서식은 매번 같잖아. ChatGPT라면 GPTs나 프로젝트에 한 번 적어두면, 다음부터는 '현장체험학습 통신문'만 말해도 돼.<span class="src">근거: 2번 지시 (자주 시키는 일)</span></p>
+      </article><article class="card" data-f="conn"><span class="tag t-conn">도구 추천</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">실험 안전수칙 포스터 그림은 이미지 생성 도구로 시키는 게 퀄리티가 더 높아.</div></div>
+      <p class="why">나는 글이랑 구성은 잘 짜는데 그림은 잘 못 그려. 문구는 나한테 받고, 그림은 이미지 생성 도구(예: ChatGPT 이미지 생성, Canva)로 만드는 게 훨씬 나아.<span class="src">근거: 5번 지시</span></p>
+      </article><article class="card" data-f="how"><span class="tag t-how">이렇게 시켜줘</span>
+      <div class="say"><div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 1l2.2 7.3L21 6l-4.6 5.7L23 15l-7.4.3L17 23l-5-5.6L7 23l1.4-7.7L1 15l6.6-3.3L3 6l6.8 2.3z"></path></svg></div><div class="bubble">누가 읽을지 한마디만 붙여줘도 말투가 딱 맞아.</div></div>
+      <p class="why">같은 내용도 학생용, 학부모용, 교사용이면 말투랑 길이가 완전히 달라. 이걸 모르면 내가 중간쯤으로 써서 아무한테도 딱 안 맞아.<span class="src">근거: 2번, 6번 지시</span></p>
+      <div class="ba"><div class="before"><small>지금</small>안내 문자 써줘</div><div class="after"><small>이렇게 바꾸면</small>학부모님께 보낼 안내 문자야. 3줄 이내, 존댓말로.</div></div></article></div>
+
+  <section class="box">
+    <h2>지시별 명확도</h2>
+    <ul class="scores" id="scores"><li><span class="p">중2 과학 '물질의 구성' 형성평가 10문항 만들기</span>
+    <span class="meter"><i style="--w:80%"></i>4/5</span>
+    <span class="c">학년·단원·문항 수까지 있어서 좋았어. 난이도만 더 있으면 완벽.</span></li><li><span class="p">가정통신문 써줘 (현장체험학습)</span>
+    <span class="meter"><i style="--w:40%"></i>2/5</span>
+    <span class="c">날짜·장소·준비물이 없어서 내가 다 지어내야 했어.</span></li><li><span class="p">수행평가 채점기준표 표로 정리</span>
+    <span class="meter"><i style="--w:80%"></i>4/5</span>
+    <span class="c">형태를 '표'로 정해줘서 한 번에 끝났어.</span></li><li><span class="p">이거 좀 더 좋게 바꿔줘</span>
+    <span class="meter"><i style="--w:20%"></i>1/5</span>
+    <span class="c">'좋게'가 뭔지 몰라서 세 번 주고받았어.</span></li><li><span class="p">실험 안전수칙 포스터 그림 만들어줘</span>
+    <span class="meter"><i style="--w:60%"></i>3/5</span>
+    <span class="c">내용은 분명한데 그림은 내가 잘 못 그려.</span></li><li><span class="p">학부모 상담 일정 안내 문자 + 시간표 엑셀</span>
+    <span class="meter"><i style="--w:60%"></i>3/5</span>
+    <span class="c">두 가지 일이 한 번에 섞여 있었어.</span></li></ul>
+  </section>
+
+  <section class="box">
+    <h2>다음 주에 딱 하나만 바꾼다면</h2>
+    <div class="one" id="nextOne">지시 끝에 '결과물 형태'만 하나 붙이기. 예: '…표로 줘', '…A4 한 장 문서로', '…문자 3줄로'.</div>
+  </section>
+
+  <section class="box">
+    <h2>내 업무에 맞춘 지시 템플릿</h2>
+    <div class="tplbox" id="tpl"><button class="copy" type="button" id="tplCopy">복사</button><span id="tplText">[하고 싶은 것] 중2 과학 형성평가
+[결과물 형태] 표 / 한글 문서 / 슬라이드 / 문자
+[누가 보나] 학생 / 학부모 / 동료 교사
+[조건] 문항 수, 난이도, 분량
+[참고] 교과서 단원, 예전 자료</span></div>
+  </section>
+
+  <div class="bye">위에 적은 건 우리 둘 다 덜 고생하자는 얘기야. 한 번에 다 바꾸지 말고 하나씩만 써봐. 한 달 뒤에 다시 받아 보면 뭐가 좋아졌는지 보일 거야.</div>
+</main>
+
+
+
+</body></html>

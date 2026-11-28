@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2학년 얼티미트 리그전</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&amp;family=Barlow+Condensed:wght@600;700&amp;family=IBM+Plex+Sans+KR:wght@400;500;600;700&amp;display=swap">
+<style>
+/* VOICE everyday school sport, run by one teacher at lunchtime
+   IDEA a painted turf field with a stadium scoreboard: chalk lines, the orange disc as the one accent
+   PICTURE the live scoreboard of the next or current game in the turf band; on the play tab the board itself fills the screen
+   COLOUR turf green #1D6A44 dominant, chalk white, disc orange #D9481F accent, warm field-grey ground
+   TYPE Black Han Sans for class names and titles, Barlow Condensed for every number, IBM Plex Sans KR for text
+   LAYOUT turf band (title + scoreboard) > sticky tab bar > one tab at a time; phone stacks title, board, controls */
+:root{color-scheme:light;--bg:#F2F4EF;--surface:#fff;--surface-2:#E9EDE6;--ink:#15241B;--muted:#5B6A60;--line:#C9D2C7;--turf:#1D6A44;--turf-2:#175A39;--turf-ink:#F4F8F3;--chalk:rgba(255,255,255,.16);--disc:#D9481F;--win:#E3F0E7;--live:#CF2E2E;--live-bg:#FBECEA;--sh1:0 1px 2px rgba(21,36,27,.07),0 6px 18px rgba(21,36,27,.07);--sh2:0 2px 4px rgba(21,36,27,.08),0 14px 34px rgba(21,36,27,.12);--fd:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;--fb:"IBM Plex Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;--fn:"Barlow Condensed","IBM Plex Sans KR",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#0D1611;--surface:#15211A;--surface-2:#1B2A21;--ink:#E6EEE8;--muted:#97A89D;--line:#2D3F34;--turf:#154D31;--turf-2:#103D27;--turf-ink:#EAF3EC;--chalk:rgba(255,255,255,.09);--disc:#FF7A4D;--win:#1A3526;--live:#FF6B6B;--live-bg:#3A1B1B;--sh1:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.25);--sh2:0 2px 4px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.35)}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#0D1611;--surface:#15211A;--surface-2:#1B2A21;--ink:#E6EEE8;--muted:#97A89D;--line:#2D3F34;--turf:#154D31;--turf-2:#103D27;--turf-ink:#EAF3EC;--chalk:rgba(255,255,255,.09);--disc:#FF7A4D;--win:#1A3526;--live:#FF6B6B;--live-bg:#3A1B1B;--sh1:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.25);--sh2:0 2px 4px rgba(0,0,0,.4),0 14px 34px rgba(0,0,0,.35)}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--fb);overflow-x:clip}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--disc);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-family:var(--fn);font-variant-numeric:tabular-nums}
+.cls{font-family:var(--fd);font-weight:400}
+.muted{color:var(--muted)}
+.hero{margin-top:calc(-1*env(safe-area-inset-top,0px));padding:calc(env(safe-area-inset-top,0px) + 22px) 0 22px;color:var(--turf-ink);background:repeating-linear-gradient(90deg,transparent 0 calc(12.5% - 2px),var(--chalk) calc(12.5% - 2px) 12.5%),linear-gradient(180deg,var(--turf),var(--turf-2))}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:20px 32px;align-items:center}
+h1{font-family:var(--fd);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.05;letter-spacing:-.01em;margin:0 0 8px;text-wrap:balance}
+.sub{margin:0;opacity:.88;font-size:15px}
+.sync{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:600;padding:4px 11px;border-radius:999px;background:rgba(0,0,0,.18)}
+.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:#F4C542}
+.sync.on::before{background:#6EE7A0}.sync.err::before{background:#FF8A80}
+.sb{background:#0F1A14;color:#F4F8F3;border-radius:18px;padding:14px 16px 12px;box-shadow:0 2px 0 rgba(255,255,255,.08) inset,0 18px 40px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08)}
+.sb-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:#B9C7BD;font-weight:600}
+.sb-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;margin-top:6px}
+.sb-team{display:grid;gap:2px}
+.sb-team:last-child{text-align:right}
+.sb-team .cls{font-size:26px;line-height:1.1}
+.sb-team small{font-size:13px;color:#B9C7BD;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-score{font-family:var(--fn);font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;color:#FFE9C2;text-shadow:0 0 18px rgba(255,180,90,.35)}
+.sb-foot{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;color:#B9C7BD}
+.sb-empty{font-size:15px;color:#C9D6CD;padding:18px 0}
+.tabs{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+.tab{flex:none;border:0;background:transparent;padding:10px 14px;border-radius:10px;font-weight:600;font-size:15px;color:var(--muted);min-height:44px}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected=true]{background:var(--turf);color:var(--turf-ink);box-shadow:var(--sh1)}
+main{padding-block:22px 56px}
+section[data-panel]{display:grid;gap:22px}
+h2{font-family:var(--fd);font-weight:400;font-size:24px;line-height:1.15;margin:0}
+h3{font-size:16px;margin:0}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin-bottom:12px}
+.head p{margin:0;font-size:14px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh1);padding:18px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:15px;box-shadow:0 1px 0 rgba(21,36,27,.06)}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--turf);border-color:var(--turf);color:var(--turf-ink);box-shadow:0 2px 0 var(--turf-2),var(--sh1)}
+.btn.acc{background:var(--disc);border-color:var(--disc);color:#fff;box-shadow:0 2px 0 color-mix(in srgb,var(--disc) 70%,#000),var(--sh1)}
+.btn.warn{color:var(--live)}
+.btn.sm{min-height:36px;padding:5px 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+label.f{display:grid;gap:4px;font-size:14px;font-weight:600;color:var(--muted)}
+input[type=text],input[type=date],input[type=time],input[type=number],select,textarea{font-size:16px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);width:100%;min-height:44px}
+textarea{min-height:180px;resize:vertical;line-height:1.5}
+.note{font-size:14px;color:var(--muted);margin:0}
+.demo{background:#FFF4D6;color:#5A4300;border-bottom:1px solid #EBD38C}
+:root[data-theme=dark] .demo{background:#3A3115;color:#F3E2A8;border-color:#5A4B1E}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .demo{background:#3A3115;color:#F3E2A8;border-color:#5A4B1E}}
+.demo .wrap{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;padding-block:10px;font-size:14px;font-weight:600}
+/* draw */
+.pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pair{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:12px;border-radius:14px;background:var(--surface-2)}
+.pair b{font-family:var(--fn);font-size:18px;color:var(--muted);padding-right:4px}
+.pair .vs{font-family:var(--fn);font-weight:700;color:var(--muted)}
+.pair.shuf{animation:shuf .5s ease}
+@keyframes shuf{30%{transform:scale(.97);opacity:.5}}
+.sched{list-style:none;margin:0;padding:0;display:grid}
+.sched li{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line)}
+.sched li:last-child{border-bottom:0}
+.sched .d{font-family:var(--fn);font-weight:700;font-size:22px;line-height:1;white-space:nowrap}
+.sched .d small{display:block;font-family:var(--fb);font-weight:500;font-size:13px;color:var(--muted);margin-top:3px}
+.sched .m{display:grid;gap:2px}
+.sched .m span{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 11px;border-radius:999px;background:var(--surface-2);font-size:14px;font-weight:600}
+.chip button{border:0;background:transparent;width:28px;height:28px;border-radius:50%;color:var(--muted)}
+.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap;border:1px solid var(--line);color:var(--muted)}
+.pill.live{background:var(--live);border-color:var(--live);color:#fff}
+.pill.final{background:var(--turf);border-color:var(--turf);color:var(--turf-ink)}
+/* play */
+.gsel{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.gbtn{flex:none;display:grid;gap:1px;text-align:left;padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);min-width:118px}
+.gbtn small{font-size:12px;color:var(--muted);font-weight:600}
+.gbtn span{font-weight:700;font-size:14px;white-space:nowrap}
+.gbtn[aria-pressed=true]{border:2px solid var(--turf);box-shadow:var(--sh1)}
+.gbtn.live{border-color:var(--live)}
+.field{border-radius:20px;padding:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 2px),var(--chalk) calc(10% - 2px) 10%),linear-gradient(180deg,var(--turf),var(--turf-2));box-shadow:var(--sh2);color:var(--turf-ink);display:grid;gap:14px}
+.f-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.f-top .rd{font-weight:700;font-size:15px}
+.halves{display:inline-flex;background:rgba(0,0,0,.22);border-radius:999px;padding:3px}
+.halves span{padding:4px 12px;border-radius:999px;font-size:13px;font-weight:700;opacity:.7}
+.halves span.on{background:#fff;color:var(--turf);opacity:1}
+.clock{display:grid;justify-items:center;gap:6px}
+.clock .t{font-family:var(--fn);font-weight:700;font-size:clamp(44px,8vw,64px);line-height:1;font-variant-numeric:tabular-nums;background:#0F1A14;color:#FFE9C2;padding:6px 18px;border-radius:12px;box-shadow:0 2px 0 rgba(255,255,255,.08) inset}
+.clock .t.over{color:#FF8A80}
+.clock .row .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:var(--turf-ink);box-shadow:none}
+.clock .row .btn.on{background:#fff;color:var(--turf)}
+.golden{background:#FFE9C2;color:#5A3A00;border-radius:12px;padding:10px 14px;font-weight:700;text-align:center}
+.teams{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.side{background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;display:grid;gap:10px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.side .nm{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px}
+.side .nm .cls{font-size:26px;line-height:1.1}
+.side .nm small{font-size:13px;color:var(--muted)}
+.side .sc{font-family:var(--fn);font-weight:700;font-size:clamp(64px,12vw,92px);line-height:.9;font-variant-numeric:tabular-nums;text-align:center}
+.side.lead .sc{color:var(--live)}
+.side.won{outline:3px solid var(--disc)}
+.goal{min-height:64px;border:0;border-radius:14px;background:var(--disc);color:#fff;font-weight:700;font-size:19px;box-shadow:0 3px 0 color-mix(in srgb,var(--disc) 65%,#000);touch-action:manipulation}
+.goal:active{transform:translateY(2px);box-shadow:0 1px 0 color-mix(in srgb,var(--disc) 65%,#000)}
+.dbtn{min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);font-weight:700;touch-action:manipulation}
+.f-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.f-foot .btn{box-shadow:none}
+.ev{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-height:360px;overflow-y:auto}
+.ev li{display:grid;grid-template-columns:40px max-content minmax(0,1fr) auto 32px;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;font-size:14px}
+.ev li:nth-child(odd){background:var(--surface-2)}
+.ev .h{font-size:12px;color:var(--muted);font-weight:600}
+.ev .k{font-weight:700}
+.ev .k.d{color:var(--turf)}
+.ev .r{font-family:var(--fn);font-weight:700;font-size:17px;white-space:nowrap}
+.ev button{border:0;background:transparent;width:32px;height:32px;border-radius:8px;color:var(--muted)}
+.ev button:hover{background:var(--live-bg);color:var(--live)}
+/* results */
+.bscroll{overflow-x:auto;padding-bottom:6px}
+.bracket{display:grid;column-gap:40px}
+.bh{font-size:14px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.rnd{display:flex;flex-direction:column}
+.slot{flex:1;display:flex;align-items:center;position:relative;padding-block:8px}
+.slot>*{width:100%}
+.slot::after,.slot::before{content:"";position:absolute;border:0 solid var(--line);pointer-events:none}
+.nx .slot::after{left:100%;width:20px}
+.nx .slot:nth-child(odd)::after{top:50%;height:50%;border-top-width:2px;border-right-width:2px;border-top-right-radius:8px}
+.nx .slot:nth-child(even)::after{bottom:50%;height:50%;border-bottom-width:2px;border-right-width:2px;border-bottom-right-radius:8px}
+.pv .slot::before{right:100%;width:20px;top:50%;border-top-width:2px}
+.fin .slot::after{left:100%;width:40px;top:50%;border-top-width:2px}
+.mt.bye{box-shadow:none;border-style:dashed;background:transparent}
+.mt.bye .tm{min-height:36px}
+.slot.done::after{border-color:var(--turf)}
+.mt{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh1);overflow:hidden;text-align:left;padding:0;display:block}
+button.mt:hover{border-color:var(--turf)}
+.mt.live{border:2px solid var(--live)}
+.mt-top{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 10px;font-size:13px;color:var(--muted);background:var(--surface-2)}
+.tm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 12px;min-height:44px}
+.tm+.tm{border-top:1px solid var(--line)}
+.tm .cls{font-size:18px}
+.tm .tbd{font-size:14px;color:var(--muted)}
+.tm .s{font-family:var(--fn);font-weight:700;font-size:24px;color:var(--muted)}
+.tm.w{background:var(--win)}
+.tm.w .s{color:var(--turf)}
+.tm.l{opacity:.55}
+.champ{text-align:center;border:2px solid var(--disc);border-radius:16px;padding:18px 12px;background:var(--surface);box-shadow:var(--sh2)}
+.disc{width:68px;height:68px;margin:0 auto 10px;border-radius:50%;background:radial-gradient(circle at 42% 38%,rgba(255,255,255,.55) 0 8%,transparent 22%),radial-gradient(circle,var(--surface) 0 30%,var(--disc) 31% 36%,color-mix(in srgb,var(--disc) 78%,#000) 37%);box-shadow:0 6px 0 -2px rgba(0,0,0,.18)}
+.champ .who{font-family:var(--fd);font-size:28px;line-height:1.15}
+.champ .lb{font-size:14px;font-weight:700;color:var(--disc)}
+.pod{display:grid;gap:8px}
+.pod div{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.pod .rk{font-family:var(--fn);font-weight:700;font-size:20px;color:var(--muted)}
+.pod .g .rk{color:var(--disc)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th{font-size:13px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+th:first-child,td:first-child,th.l,td.l{text-align:left}
+td.n{font-family:var(--fn);font-weight:600;font-size:18px;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+/* players */
+.awards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.aw{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--sh1);display:grid;gap:2px}
+.aw .k{font-size:14px;font-weight:700;color:var(--muted)}
+.aw .v{font-family:var(--fd);font-size:22px;line-height:1.2}
+.aw .x{font-family:var(--fn);font-weight:700;font-size:18px;color:var(--disc)}
+.aw.mvp{border:2px solid var(--disc)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);min-width:44px;min-height:40px;font-weight:700;font-family:var(--fn);font-size:18px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--turf);color:var(--turf-ink)}
+/* board (print) */
+.sheet{background:#fff;color:#111;width:100%;max-width:794px;margin:0 auto;padding:40px 44px;border-radius:6px;box-shadow:var(--sh2);overflow:hidden}
+.sheet *{color:inherit}
+.sh-band{background:#1D6A44;color:#fff;margin:-40px -44px 22px;padding:26px 44px 20px}
+.sh-band h4{font-family:var(--fd);font-weight:400;font-size:34px;margin:0;line-height:1.1}
+.sh-band p{margin:4px 0 0;font-size:14px;opacity:.9}
+.sh-pod{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.sh-pod div{border:1.5px solid #1D6A44;border-radius:10px;padding:10px 12px}
+.sh-pod div:first-child{border-color:#D9481F;border-width:2.5px}
+.sh-pod small{display:block;font-size:12px;font-weight:700;color:#555}
+.sh-pod b{font-family:var(--fd);font-weight:400;font-size:22px}
+.sh-aw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.sh-aw div{background:#F0F4EF;border-radius:8px;padding:8px 10px;font-size:13px}
+.sh-aw small{display:block;font-weight:700;color:#1D6A44;font-size:12px}
+.sh-aw b{font-size:14px}
+.sheet table{font-size:12.5px}
+.sheet th{background:#E7EEE6;color:#333}
+.sheet td,.sheet th{padding:5px 8px;border-color:#D6DDD4}
+.sheet td.n{font-size:14px}
+.sh-cap{font-weight:700;font-size:15px;margin:0 0 6px;color:#1D6A44}
+.sh-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+/* dialogs */
+dialog{border:0;border-radius:18px;padding:0;background:var(--surface);color:var(--ink);width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 24px 70px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,18,12,.55)}
+.dh{padding:16px 18px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:1px solid var(--line)}
+.dh h3{font-family:var(--fd);font-weight:400;font-size:24px}
+.dh p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.db{padding:14px 18px;display:grid;gap:12px;overflow-y:auto;max-height:62dvh}
+.df{padding:12px 18px 16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;border-top:1px solid var(--line)}
+.df .l{margin-right:auto}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.nums button{min-height:56px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);display:grid;place-items:center;gap:0;padding:4px}
+.nums button b{font-family:var(--fn);font-size:22px;line-height:1}
+.nums button small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.nums button:hover{border-color:var(--turf)}
+.nums button.sel{background:var(--turf);color:var(--turf-ink);border-color:var(--turf)}
+.nums button.sel small{color:var(--turf-ink)}
+.sp{display:grid;gap:8px}
+.sp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.sp-row b{display:block;font-size:15px}
+.sp-row span{color:var(--muted);font-size:13px}
+.sp-tot{font-family:var(--fn);font-weight:700;font-size:22px;color:var(--turf)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:12px;font-size:15px;font-weight:600;z-index:60;box-shadow:var(--sh2);max-width:calc(100vw - 32px)}
+.empty{padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:15px;text-align:center}
+.priv{border-left:4px solid var(--turf);background:var(--win);border-radius:10px;padding:10px 14px;font-size:14px;margin:0}
+details summary{cursor:pointer;font-weight:600}
+.log{list-style:none;margin:10px 0 0;padding:0;font-size:14px;display:grid;gap:2px;max-height:280px;overflow-y:auto}
+.log li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:4px 0;border-bottom:1px solid var(--line)}
+.log time{color:var(--muted);font-family:var(--fn);white-space:nowrap}
+@media (max-width:860px){.hero .wrap,.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.pairs{grid-template-columns:minmax(0,1fr)}.sched li{grid-template-columns:78px minmax(0,1fr)}.sched li>.act{grid-column:2}.teams{gap:8px}.side{padding:10px}.side .nm .cls{font-size:22px}.ev li{grid-template-columns:36px max-content minmax(0,1fr) 32px}.ev .r{display:none}.sheet{padding:20px}.sh-band{margin:-20px -20px 16px;padding:18px 20px}.sh-aw{grid-template-columns:repeat(2,minmax(0,1fr))}.sh-pod{grid-template-columns:minmax(0,1fr)}.sh-top{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <h1 id="hTitle">2학년 얼티미트 리그전</h1>
+      <p class="sub" id="hSub">8개 반 학급 대항 토너먼트 · 평일 점심시간 · 전반 남학생, 후반 여학생</p>
+      <span class="sync on" id="sync" role="status">저장됨 · 컴퓨터·휴대폰 동기화</span>
+    </div>
+    <div class="sb" id="heroBoard" aria-live="polite"><div class="sb-top"><span>8강 4경기 · 12/18 금요일</span><span class="pill live">경기 중</span></div>
+  <div class="sb-row"><div class="sb-team"><span class="cls">3반</span><small></small></div><div class="sb-score">3<span style="opacity:.5"> : </span>1</div><div class="sb-team"><span class="cls">6반</span><small></small></div></div>
+  <div class="sb-foot"><span>후반 여학생 · 04:11</span><span>7분 + 7분</span></div></div>
+  </div>
+</header>
+<div class="demo" id="demoBar" hidden="">
+  <div class="wrap"><span>예시 화면이에요. 여기서 바꾼 내용은 저장되지 않아요.</span><button class="btn sm pri" id="btnStart" type="button">실제 대회 시작하기</button></div>
+</div>
+<nav class="tabs" aria-label="메뉴">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" data-tab="draw" type="button" aria-selected="false">대진 편성</button>
+    <button class="tab" role="tab" data-tab="play" type="button" aria-selected="true">경기 진행</button>
+    <button class="tab" role="tab" data-tab="results" type="button" aria-selected="false">결과</button>
+    <button class="tab" role="tab" data-tab="players" type="button" aria-selected="false">개인 기록</button>
+    <button class="tab" role="tab" data-tab="board" type="button" aria-selected="false">게시용 출력</button>
+    <button class="tab" role="tab" data-tab="backup" type="button" aria-selected="false">설정·백업</button>
+  </div>
+</nav>
+<main class="wrap">
+  <section data-panel="draw" hidden="">
+    <div class="card">
+      <div class="head"><h2 id="drawH">8강 대진</h2><div class="row"><button class="btn acc" id="btnDraw" type="button" disabled="">무작위 추첨</button></div></div>
+      <div class="pairs" id="pairs"><div class="pair" id="pair0"><b>1</b><select data-pi="0" data-pj="0" aria-label="8강 1경기 왼쪽 반" disabled=""><option value="0">반 선택</option><option value="1" selected="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select><span class="vs">VS</span><select data-pi="0" data-pj="1" aria-label="8강 1경기 오른쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" selected="">8반</option></select></div><div class="pair" id="pair1"><b>2</b><select data-pi="1" data-pj="0" aria-label="8강 2경기 왼쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" selected="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select><span class="vs">VS</span><select data-pi="1" data-pj="1" aria-label="8강 2경기 오른쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" selected="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select></div><div class="pair" id="pair2"><b>3</b><select data-pi="2" data-pj="0" aria-label="8강 3경기 왼쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" selected="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select><span class="vs">VS</span><select data-pi="2" data-pj="1" aria-label="8강 3경기 오른쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" selected="">7반</option><option value="8" disabled="">8반</option></select></div><div class="pair" id="pair3"><b>4</b><select data-pi="3" data-pj="0" aria-label="8강 4경기 왼쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" selected="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" disabled="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select><span class="vs">VS</span><select data-pi="3" data-pj="1" aria-label="8강 4경기 오른쪽 반" disabled=""><option value="0">반 선택</option><option value="1" disabled="">1반</option><option value="2" disabled="">2반</option><option value="3" disabled="">3반</option><option value="4" disabled="">4반</option><option value="5" disabled="">5반</option><option value="6" selected="">6반</option><option value="7" disabled="">7반</option><option value="8" disabled="">8반</option></select></div></div>
+      <p class="note" id="drawNote" style="margin-top:12px">경기가 시작되어 대진을 바꿀 수 없어요. 바꾸려면 설정·백업에서 초기화하세요.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div class="head"><h2>경기 일정</h2><p>평일만 · 제외한 날은 건너뜀</p></div>
+        <ul class="sched" id="sched"><li><div class="d">12/14<small>월요일</small></div><div class="m"><b>1반 vs 8반 · 5:3</b><span>8강 1경기</span></div><div class="act row"><span class="pill final">종료</span></div></li><li><div class="d">12/15<small>화요일</small></div><div class="m"><b>4반 vs 5반 · 4:5</b><span>8강 2경기</span></div><div class="act row"><span class="pill final">종료</span></div></li><li><div class="d">12/17<small>목요일</small></div><div class="m"><b>2반 vs 7반 · 2:4</b><span>8강 3경기</span></div><div class="act row"><span class="pill final">종료</span></div></li><li><div class="d">12/18<small>금요일</small></div><div class="m"><b>3반 vs 6반</b><span>8강 4경기 · 12:40</span></div><div class="act row"><span class="pill live">경기 중</span></div></li><li><div class="d">12/21<small>월요일</small></div><div class="m"><b>1반 vs 5반</b><span>4강 1경기 · 12:40</span></div><div class="act row"><button class="btn sm" data-post="1-0" type="button">연기</button></div></li><li><div class="d">12/22<small>화요일</small></div><div class="m"><b>7반 vs ?</b><span>4강 2경기 · 12:40</span></div><div class="act row"><button class="btn sm" data-post="1-1" type="button">연기</button></div></li><li><div class="d">12/23<small>수요일</small></div><div class="m"><b>? vs ?</b><span>결승 · 12:40</span></div><div class="act row"><button class="btn sm" data-post="2-0" type="button">연기</button></div></li></ul>
+      </div>
+      <div class="card" style="display:grid;gap:14px">
+        <h2>일정 설정</h2>
+        <div class="grid2" style="gap:12px">
+          <label class="f">시작일<input type="date" id="sStart" value="2026-12-14" style=""></label>
+          <label class="f">경기 시작 시각<input type="time" id="sTime" value="12:40" style=""></label>
+        </div>
+        <label class="f">하루 경기 수<select id="sPer"><option value="1" selected="">하루 1경기</option><option value="2">하루 2경기</option></select></label>
+        <div style="display:grid;gap:6px">
+          <span class="f" style="font-size:14px;font-weight:600;color:var(--muted)">경기 없는 날 (시험·행사·연기)</span>
+          <div class="row"><input type="date" id="sSkip" style="flex: 1 1 0%;" value=""><button class="btn" id="btnSkip" type="button">추가</button></div>
+          <div class="chips" id="skips"><span class="chip">12/16 수요일<button type="button" data-unskip="2026-12-16" aria-label="12/16 제외 취소">×</button></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-panel="play">
+    <div class="gsel" id="gsel" role="group" aria-label="경기 선택"><button class="gbtn " aria-pressed="false" data-g="0-0" type="button"><small>8강 1경기 · 종료</small><span>1반 5:3 8반</span></button><button class="gbtn " aria-pressed="false" data-g="0-1" type="button"><small>8강 2경기 · 종료</small><span>4반 4:5 5반</span></button><button class="gbtn " aria-pressed="false" data-g="0-2" type="button"><small>8강 3경기 · 종료</small><span>2반 2:4 7반</span></button><button class="gbtn live" aria-pressed="true" data-g="0-3" type="button"><small>8강 4경기 · 경기 중</small><span>3반 3:1 6반</span></button><button class="gbtn " aria-pressed="false" data-g="1-0" type="button"><small>4강 1경기</small><span>1반 vs 5반</span></button><button class="gbtn " aria-pressed="false" data-g="1-1" type="button"><small>4강 2경기</small><span>7반 vs ?</span></button><button class="gbtn " aria-pressed="false" data-g="2-0" type="button"><small>결승</small><span>? vs ?</span></button></div>
+    <div id="playArea"><div class="field">
+    <div class="f-top"><span class="rd">8강 4경기 · 12/18 금요일</span><span class="halves"><span class="">전반 남학생</span><span class="on">후반 여학생</span></span></div>
+    <div class="clock"><div class="t " id="clockT">04:11</div><div class="row" style="justify-content:center"><button class="btn sm " id="tRun" type="button">계속</button><button class="btn sm" id="tReset" type="button">시간 초기화</button><button class="btn sm" id="tBack" type="button">전반으로</button></div><div class="note" style="color:var(--turf-ink);opacity:.85">7분 경기</div></div>
+    
+    <div class="teams"><div class="side lead"><div class="nm"><span class="cls">3반</span><small></small></div><div class="sc num" aria-live="polite">3</div><button class="goal" data-goal="a" type="button">득점 +1</button></div><div class="side "><div class="nm"><span class="cls">6반</span><small></small></div><div class="sc num" aria-live="polite">1</div><button class="goal" data-goal="b" type="button">득점 +1</button></div></div>
+    <div class="f-foot"><button class="btn" id="bUndo" type="button">마지막 기록 되돌리기</button><button class="btn acc" id="bFinish" type="button">경기 종료</button></div>
+  </div>
+  <div class="card"><div class="head"><h2>경기 기록</h2><p>4개 · 잘못된 기록은 × 로 지우기</p></div>
+  <ul class="ev"><li><span class="h">후반</span><span class="k">3반 득점</span><span>이바다 (도움 이바다)</span><span class="r">3:1</span><button type="button" data-del="3" aria-label="기록 지우기">×</button></li><li><span class="h">전반</span><span class="k">3반 득점</span><span>이바다 (도움 신나은)</span><span class="r">2:1</span><button type="button" data-del="2" aria-label="기록 지우기">×</button></li><li><span class="h">전반</span><span class="k">6반 득점</span><span>윤예린 (도움 오아린)</span><span class="r">1:1</span><button type="button" data-del="1" aria-label="기록 지우기">×</button></li><li><span class="h">전반</span><span class="k">3반 득점</span><span>윤지안 (도움 조구름)</span><span class="r">1:0</span><button type="button" data-del="0" aria-label="기록 지우기">×</button></li></ul></div></div>
+  </section>
+
+  <section data-panel="results" hidden="">
+    <div class="card">
+      <div class="head"><h2>토너먼트 대진표</h2><p id="progress"></p></div>
+      <div class="bscroll"><div id="bracket"></div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="head"><h2>최종 순위</h2><p>4강 패자는 공동 3위</p></div><div class="pod" id="podium"></div></div>
+      <div class="card"><div class="head"><h2>반별 기록</h2><p>스피릿은 상대 반이 매긴 평균</p></div><div class="scroll"><table id="clsTable"></table></div></div>
+    </div>
+  </section>
+
+  <section data-panel="players" hidden="">
+    <div class="awards" id="awards"></div>
+    <div class="card">
+      <div class="head"><h2>개인 기록</h2><div class="row"><select id="pFilter" style="width:auto"></select></div></div>
+      <div class="scroll"><table id="pTable"></table></div>
+      <p class="note" style="margin-top:10px">이름은 이 기기에 등록된 경우에만 보여요. 기록은 반·번호로만 저장돼요.</p>
+    </div>
+    <div class="card" style="display:grid;gap:10px">
+      <h2>MVP 지정</h2>
+      <div class="row"><select id="mvpCls" style="width:auto"></select><select id="mvpNo" style="width:auto"></select><button class="btn pri" id="btnMvp" type="button">MVP로 지정</button><button class="btn" id="btnMvpClr" type="button">지정 취소</button></div>
+    </div>
+  </section>
+
+  <section data-panel="board" hidden="">
+    <div class="card" style="display:grid;gap:10px">
+      <div class="head" style="margin:0"><h2>학년게시판 게시용</h2><div class="row"><button class="btn" id="btnCopyTbl" type="button">표 복사</button><button class="btn pri" id="btnSaveSheet" type="button">인쇄용 파일 저장</button></div></div>
+      <p class="note" id="nameWarn"></p>
+      <p class="note">인쇄용 파일(.html)을 저장한 뒤 열어서 Ctrl+P로 인쇄하세요. 순위, 시상, 득점·도움 부문별 상위 5위가 실려요. 공동 순위 때문에 5명을 넘게 되면 그 순위는 빼요(공동 1위가 6명 이상이면 인원수만 적어요).</p>
+    </div>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <section data-panel="backup" hidden="">
+    <div class="grid2">
+      <div class="card" style="display:grid;gap:12px">
+        <h2>대회 설정</h2>
+        <p class="note">학년과 학급 수를 바꾸면 대진표 크기가 맞춰져요. 반이 2의 거듭제곱(4·8·16)이 아니면 첫 라운드에 부전승이 생겨요. 경기가 시작된 뒤에는 바꿀 수 없어요.</p>
+        <div class="grid2" style="gap:12px">
+          <label class="f">학년<select id="cGrade"></select></label>
+          <label class="f">학급 수<input type="number" id="cN" min="2" max="16" inputmode="numeric" value="" style=""></label>
+        </div>
+        <div class="row"><button class="btn pri" id="btnCfg" type="button">학년·학급 수 적용</button></div>
+        <div class="grid2" style="gap:12px;margin-top:6px">
+          <label class="f">전반 출전<select id="h1Sel"></select></label>
+          <label class="f">후반 출전<select id="h2Sel"></select></label>
+        </div>
+        <label class="f">전·후반 시간(분)<input type="number" id="gMin" min="1" max="30" inputmode="numeric" value="" style=""></label>
+      </div>
+      <div class="card" style="display:grid;gap:12px">
+        <h2>반 설정</h2>
+        <p class="note">번호 범위(인원)와 팀 이름은 기기 간에 공유돼요. 명단을 불러오면 인원은 자동으로 맞춰져요.</p>
+        <div class="scroll" style="max-height:420px;overflow-y:auto"><table id="clsSet"></table></div>
+      </div>
+    </div>
+    <div class="card" style="display:grid;gap:14px">
+      <div class="head" style="margin:0"><h2>학생 명단</h2><p id="nStat"></p></div>
+      <p class="priv">명단은 <b>이 기기의 브라우저에만</b> 저장되고 서버나 다른 기기로 보내지지 않아요. 파일도 이 기기 안에서만 읽어요. 브라우저 기록을 지우면 함께 사라지니 원본 명단은 따로 보관하세요.</p>
+      <div class="grid2">
+        <div style="display:grid;gap:10px;align-content:start">
+          <h3>한 번에 불러오기</h3>
+          <p class="note">엑셀(.xlsx)·CSV 파일을 고르거나, 엑셀에서 복사해 아래에 붙여 넣으세요. 열은 <b>반·번호·이름</b> 또는 <b>학번·이름</b>(예: 20105)이면 돼요. 제목 줄과 다른 열은 무시해요.</p>
+          <div class="row"><label class="btn pri" for="rosterFile">명단 파일 고르기</label><input type="file" id="rosterFile" accept=".xlsx,.xls,.csv,.txt" hidden="" value="" style=""><button class="btn" id="btnTpl" type="button">양식 받기 (.csv)</button></div>
+          <textarea id="bulk" placeholder="반	번호	이름
+1	1	김OO
+1	2	이OO
+또는
+20101	김OO" style=""></textarea>
+          <div class="row"><button class="btn" id="btnBulk" type="button">붙여 넣은 명단 반영</button></div>
+          <p class="note" id="impStat" aria-live="polite"></p>
+        </div>
+        <div style="display:grid;gap:10px;align-content:start">
+          <h3>반별로 보기·고치기</h3>
+          <label class="f">반<select id="nCls"></select></label>
+          <label class="f">한 줄에 한 명: "번호 이름"<textarea id="nText" placeholder="1 김OO
+2 이OO" style=""></textarea></label>
+          <div class="row"><button class="btn pri" id="btnNames" type="button">이 반 명단 저장</button><button class="btn warn" id="btnNamesClr" type="button">이 기기 명단 모두 지우기</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="display:grid;gap:12px">
+      <h2>백업</h2>
+      <div class="row">
+        <button class="btn" id="btnCsv" type="button">엑셀용 기록 내보내기 (.csv)</button>
+        <label class="row" style="font-size:15px;gap:6px"><input type="checkbox" id="csvNames" style="width: 20px; height: 20px;" value="on"> 이 기기 이름 포함</label>
+      </div>
+      <div class="row">
+        <button class="btn" id="btnJson" type="button">전체 백업 저장 (.json)</button>
+        <label class="btn" for="fileIn">백업 불러오기</label><input type="file" id="fileIn" accept=".json,application/json" hidden="" value="" style="">
+        <button class="btn warn" id="btnReset" type="button">전체 초기화</button>
+      </div>
+      <details><summary>수정 기록</summary><ul class="log" id="logList"></ul></details>
+    </div>
+  </section>
+</main>
+
+<div style="position:fixed;inset:0;z-index:2147483646;background:rgba(8, 18, 12, 0.55);backdrop-filter:none"></div><dialog id="dlgPick" open="" style=";position:fixed;inset:0;margin:auto;z-index:2147483647"><div class="dh"><div><h3 id="pkTitle">3반 도움</h3><p id="pkSub">이바다 득점 · 패스한 학생을 고르세요</p></div></div><div class="db"><div class="nums" id="pkNums"><button type="button" data-n="1"><b>1</b><small>권이안</small></button><button type="button" data-n="2"><b>2</b><small>최채원</small></button><button type="button" data-n="3"><b>3</b><small>장건우</small></button><button type="button" data-n="4"><b>4</b><small>신나은</small></button><button type="button" data-n="5"><b>5</b><small>박우진</small></button><button type="button" data-n="6"><b>6</b><small>윤지안</small></button><button type="button" data-n="7"><b>7</b><small>서하늘</small></button><button type="button" data-n="8"><b>8</b><small>이바다</small></button><button type="button" data-n="9"><b>9</b><small>조구름</small></button><button type="button" data-n="10"><b>10</b><small>오별빛</small></button><button type="button" data-n="11"><b>11</b><small>김새봄</small></button><button type="button" data-n="12"><b>12</b><small>강여름</small></button><button type="button" data-n="13"><b>13</b><small>한가을</small></button><button type="button" data-n="14"><b>14</b><small>황겨울</small></button><button type="button" data-n="15"><b>15</b><small>정도윤</small></button><button type="button" data-n="16"><b>16</b><small>임서연</small></button><button type="button" data-n="17"><b>17</b><small>권지호</small></button><button type="button" data-n="18"><b>18</b><small>최하린</small></button><button type="button" data-n="19"><b>19</b><small>장시우</small></button><button type="button" data-n="20"><b>20</b><small>신유나</small></button><button type="button" data-n="21"><b>21</b><small>박준서</small></button><button type="button" data-n="22"><b>22</b><small>윤예린</small></button><button type="button" data-n="23"><b>23</b><small>서은호</small></button><button type="button" data-n="24"><b>24</b><small>이다온</small></button><button type="button" data-n="25"><b>25</b><small>조로운</small></button><button type="button" data-n="26"><b>26</b><small>오아린</small></button><button type="button" data-n="27"><b>27</b><small>김태오</small></button><button type="button" data-n="28"><b>28</b><small>강소율</small></button></div></div><div class="df"><button class="btn l" id="pkNone" type="button">도움 없음</button><button class="btn" id="pkCancel" type="button">취소</button></div></dialog>
+
+
+<div class="toast" id="toast" role="status" hidden=""></div>
+
+
+
+
+</body></html>

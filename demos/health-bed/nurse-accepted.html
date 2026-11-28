@@ -1,0 +1,167 @@
+<!doctype html>
+<html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>보건실 침상 알리미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;display=swap">
+<style>
+:root{
+  --bg:#F3F5F4; --card:#FFFFFF; --ink:#1B2421; --ink2:#33403D; --muted:#4F5B58; --line:#D5DCD9; --line2:#ECEFEE;
+  --green:#0B6B57; --green-ink:#0B5A49; --green-soft:#E3F2EC; --green-chip:#CDE9E0; --green-pale:#EAF5F1; --green-dash:#6FB3A1;
+  --warm:#B4561A; --warm-ink:#7A3A08; --warm-soft:#FFF4EA; --warm-chip:#F6E2D1; --warm-line:#D0711F;
+  --full:#5E4A3D; --full-soft:#F1E4DA; --gray:#D5DCD9;
+  --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif;-webkit-text-size-adjust:100%}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+a{color:var(--green)}
+:focus-visible{outline:3px solid #2E6FD8;outline-offset:2px}
+.wrap{max-width:1216px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:20px}
+@media (min-width:760px){.wrap{padding:28px 32px 48px;gap:24px}}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.5px}
+@media (min-width:760px){.brand h1{font-size:26px}}
+.badge{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--green-chip);color:var(--green-ink)}
+.me{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.linkbtn{border:0;background:transparent;color:var(--green);font-weight:700;min-height:44px;padding:0 6px;text-decoration:underline}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+h2{margin:0;font-size:18px;font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.chip{display:inline-block;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip.use{background:var(--warm-chip);color:var(--warm-ink)}
+.chip.free{background:var(--green-chip);color:var(--green-ink)}
+.btn{min-height:52px;border-radius:12px;font-weight:800;font-size:17px;padding:0 18px;border:0}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:disabled{background:var(--gray);color:var(--muted)}
+.btn.line{background:#fff;border:1px solid var(--ink);color:var(--ink)}
+.btn.soft{background:#fff;border:1px solid #C9B39E;color:#6B3A10}
+.btn.big{min-height:64px;font-size:20px}
+.sid{font-weight:800;letter-spacing:-.3px}
+.sidsub{font-weight:500;color:var(--muted);font-size:.6em;margin-left:6px}
+/* 사용 가능 카드 */
+.avail{border-radius:20px;padding:24px;color:#fff;background:var(--green);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.avail.zero{background:var(--full)}
+.avail.closed{background:#55615E}
+.avail .lab{font-size:15px;font-weight:700;opacity:.92}
+.avail .num{font-size:64px;font-weight:800;line-height:1}
+.avail .of{font-size:24px;font-weight:700;opacity:.85}
+@media (min-width:760px){.avail .num{font-size:88px}}
+/* 교직원 레이아웃 */
+.cols{display:flex;flex-wrap:wrap;gap:20px}
+.col-l{flex:1 1 360px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.col-r{flex:2 1 520px;min-width:0}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:700;color:var(--muted)}
+.sidinput{min-height:60px;border:2px solid var(--green);border-radius:12px;padding:0 14px;font-size:30px;font-weight:800;letter-spacing:6px;text-align:center;width:100%;background:#fff}
+.preview{border-radius:10px;padding:12px 14px;font-size:16px;font-weight:700;text-align:center;background:var(--green-soft);color:var(--green-ink)}
+.preview.bad{background:var(--warm-soft);color:var(--warm-ink)}
+.preview.empty{background:var(--line2);color:var(--muted);font-weight:500}
+.mine{display:flex;flex-direction:column;gap:8px}
+.minerow{border-radius:12px;padding:12px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.minerow.wait{background:var(--warm-soft);color:#6B3A10}
+.minerow.ok{background:var(--green-soft);color:var(--green-ink)}
+.minerow.no{background:var(--line2);color:var(--ink2)}
+table{width:100%;border-collapse:collapse;font-size:17px}
+th{text-align:left;color:var(--muted);font-size:14px;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:14px 12px;border-bottom:1px solid var(--line2)}
+tr:last-child td{border-bottom:0}
+td.dim{color:var(--muted)}
+td:first-child,th{white-space:nowrap}
+@media (max-width:600px){
+  table{font-size:15px}
+  th,td{padding:10px 6px}
+  td .sidsub{display:block;margin-left:0;font-size:13px}
+}
+/* 보건 */
+.seg{display:flex;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg button{min-height:44px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:15px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--green);color:#fff;font-weight:700}
+.seg button.away[aria-pressed="true"]{background:#55615E}
+.reqs{display:flex;flex-direction:column;gap:12px}
+.req{background:var(--warm-soft);border:2px solid var(--warm-line);border-radius:var(--r);padding:18px 20px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px}
+.req.fresh{animation:pulse 1s ease-in-out 3}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(208,113,31,.25)}}
+.req .who{display:flex;flex-direction:column;gap:4px}
+.req .when{font-size:14px;font-weight:700;color:var(--warm-ink)}
+.req .acts{display:flex;gap:10px;flex-wrap:wrap}
+.beds{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.bed{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px;min-height:220px}
+.bed.free{background:var(--green-pale);border:2px dashed var(--green-dash)}
+.bed .hd{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;color:var(--muted)}
+.bed .sid{font-size:30px}
+.bed .act{margin-top:auto}
+.bed .act .btn{width:100%}
+.setrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:15px}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:20px;font-weight:700}
+.stepper output{min-width:56px;text-align:center;font-weight:800;font-size:18px}
+/* 모달 */
+.modal{position:fixed;inset:0;background:rgba(20,28,26,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:0}
+@media (min-width:760px){.modal{align-items:center;padding:24px}}
+.sheet{background:#fff;width:100%;max-width:440px;border-radius:22px 22px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;max-height:100vh;overflow:auto}
+@media (min-width:760px){.sheet{border-radius:22px}}
+.sheet .head{display:flex;justify-content:space-between;align-items:center}
+.keypad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.keypad button{min-height:56px;border:0;border-radius:12px;background:var(--bg);font-size:24px;font-weight:700}
+.txt{min-height:52px;border:1px solid #B9C3C0;border-radius:12px;padding:0 14px;font-size:18px;width:100%;background:#fff}
+.txt.strong{border:2px solid var(--green);font-weight:700;font-size:20px}
+.examples{display:flex;flex-wrap:wrap;gap:6px}
+.examples button{font-size:13px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted);min-height:36px}
+.msg{border-radius:12px;padding:12px 14px;font-size:14px;background:var(--warm-soft);color:#6B3A10}
+.msg.info{background:var(--green-soft);color:var(--green-ink)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#1B2421;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;display:flex;gap:14px;align-items:center;z-index:30;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgba(0,0,0,.2)}
+.toast button{border:0;background:transparent;color:#9EE0CB;font-weight:800;min-height:40px;font-size:15px;text-decoration:underline}
+.sync{font-size:13px;color:var(--muted)}
+.sync.err{color:var(--warm-ink);font-weight:700}
+.setup{max-width:440px;margin:0 auto;padding:28px 20px 40px;display:flex;flex-direction:column;gap:20px;min-height:100vh}
+.setup h1{margin:0;font-size:24px;font-weight:800}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+
+<div id="app">
+  <main class="wrap">
+    <header class="top">
+    <div class="brand"><span style="color:var(--green)"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18V8"></path><path d="M3 14h18v4"></path><path d="M21 14v-2a3 3 0 0 0-3-3h-7v5"></path><circle cx="7" cy="11" r="2"></circle></svg></span><h1>보건실 침상 알리미</h1><span class="badge">보건교사</span></div>
+    <div class="me"><span>내 표시: <b>보건실</b></span><button class="linkbtn" type="button" data-act="openSettings">설정</button></div>
+  </header>
+    <div class="top">
+      <div class="seg" id="openSeg" role="group" aria-label="보건실 상태"><button type="button" data-act="setOpen" data-v="1" aria-pressed="true">보건실 운영 중</button><button type="button" class="away" data-act="setOpen" data-v="0" aria-pressed="false">잠시 부재 (요청 받지 않음)</button></div>
+      <div class="sync" id="sync">10:35 기준 · 자동 갱신</div>
+    </div>
+    <section id="waiting" class="reqs" aria-label="침상 요청"></section>
+    <section style="display:flex;flex-direction:column;gap:14px" aria-label="침상 현황">
+      <div class="top"><h2>침상 현황</h2><span id="bedSum" class="muted">사용 가능 <b style="color:var(--green);font-size:20px">1</b> / 4</span></div>
+      <div id="beds" class="beds">
+    <div class="bed"><div class="hd"><span>1번 침상</span><span class="chip use">사용 중</span></div>
+      <div style="font-size:30px"><span class="sid">1101</span><span class="sidsub">1학년 1반 1번</span></div>
+      <div class="small muted">10:03 입실 · 32분 경과</div>
+      <div class="act"><button class="btn line" type="button" data-act="discharge" data-bed="1" aria-label="1번 침상 1101 퇴실">퇴실</button></div></div>
+    <div class="bed"><div class="hd"><span>2번 침상</span><span class="chip use">사용 중</span></div>
+      <div style="font-size:30px"><span class="sid">3214</span><span class="sidsub">3학년 2반 14번</span></div>
+      <div class="small muted">10:24 입실 · 11분 경과 · 전화 접수</div>
+      <div class="act"><button class="btn line" type="button" data-act="discharge" data-bed="2" aria-label="2번 침상 3214 퇴실">퇴실</button></div></div>
+    <div class="bed"><div class="hd"><span>3번 침상</span><span class="chip use">사용 중</span></div>
+      <div style="font-size:30px"><span class="sid">2305</span><span class="sidsub">2학년 3반 5번</span></div>
+      <div class="small muted">10:35 입실 · 0분 경과</div>
+      <div class="act"><button class="btn line" type="button" data-act="discharge" data-bed="3" aria-label="3번 침상 2305 퇴실">퇴실</button></div></div>
+    <div class="bed free"><div class="hd"><span>4번 침상</span><span class="chip free">비어 있음</span></div>
+      <div style="font-size:22px;font-weight:700;color:var(--green-ink)">사용 가능</div>
+      <div class="act"><button class="btn primary" type="button" data-act="assignOpen" data-bed="4">+ 학생 입력 (전화 접수)</button></div></div></div>
+    </section>
+    <section class="card setrow" aria-label="요청 대기 시간">
+      <span>요청을 수락하지 않으면</span>
+      <div class="stepper"><button type="button" data-act="tmo" data-d="-1" aria-label="1분 줄이기">−</button><output id="tmo">3분</output><button type="button" data-act="tmo" data-d="1" aria-label="1분 늘리기">+</button></div>
+      <span>뒤에 자동 취소됩니다.</span>
+    </section>
+    <p class="small muted" style="margin:0">요청이 오면 이 화면이 깜빡이고 알림음이 울립니다(이 창을 한 번 클릭해 두면 소리가 켜져요) · 퇴실을 누르면 5초 동안 [되돌리기]가 표시됩니다 · 학생은 학번만 저장되며 매일 하교 후 자동으로 지워집니다.</p>
+  </main></div>
+<div id="modal"></div>
+<div id="toast" role="status" aria-live="polite"><div class="toast"><span>3번 침상으로 수락했어요. 요청한 선생님께 알림이 갑니다.</span></div></div>
+
+
+
+</body></html>

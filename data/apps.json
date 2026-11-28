@@ -21,6 +21,7 @@
       "url": "https://kimkiyeop1-ux.github.io/gym-metaverse/",
       "thumb": "shots/gym-metaverse.jpg",
       "video": "videos/gym-metaverse.mp4",
+      "demo": "demos/gym-metaverse.js",
       "tags": [
         "체육",
         "메타버스",
@@ -91,6 +92,7 @@
       "date": "",
       "url": "",
       "thumb": "shots/ultimate-league.jpg",
+      "demo": "demos/ultimate-league.js",
       "video": "",
       "tags": [
         "얼티미트",
@@ -174,6 +176,7 @@
       "url": "",
       "thumb": "shots/flagfootball.jpg",
       "video": "",
+      "demo": "demos/flagfootball.js",
       "tags": [
         "체육",
         "수행평가",
@@ -242,6 +245,7 @@
       "date": "",
       "url": "",
       "thumb": "shots/lunch-duty.jpg",
+      "demo": "demos/lunch-duty.js",
       "video": "",
       "tags": [
         "급식",
@@ -312,6 +316,8 @@
       "date": "",
       "url": "",
       "thumb": "shots/health-bed.jpg",
+      "video": "",
+      "demo": "demos/health-bed.js",
       "tags": [
         "보건실",
         "침상",
@@ -384,6 +390,7 @@
       "date": "",
       "url": "https://kimkiyeop1-ux.github.io/sports-day-app/dev/",
       "thumb": "shots/sports-day.jpg",
+      "demo": "demos/sports-day.js",
       "video": "",
       "tags": [
         "체육대회",
@@ -451,6 +458,7 @@
       "url": "https://claude.ai/artifact/DreepvuSknkuSBFH31bKZB",
       "thumb": "shots/ai-coach.jpg",
       "video": "videos/ai-coach.mp4",
+      "demo": "demos/ai-coach.js",
       "tags": [
         "AI",
         "프롬프트",
